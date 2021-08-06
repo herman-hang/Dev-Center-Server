@@ -7,6 +7,7 @@ declare (strict_types=1);
 
 namespace app\admin\controller;
 
+use app\admin\middleware\Auth;
 use app\BaseController;
 use think\facade\Db;
 use think\facade\Request;
@@ -14,6 +15,12 @@ use app\admin\model\AdminLog;
 
 class Base extends BaseController
 {
+    /**
+     * 检测登录和权限中间件调用
+     * @var string[]
+     */
+    protected $middleware = [Auth::class];
+
     /**
      * 记录管理员日志
      * @param string $content 日志内容
@@ -27,6 +34,10 @@ class Base extends BaseController
         Db::name('admin_log')->where('create_time', '<= time', time() - (84600 * 60))->delete();
         //记录当前客户端IP地址
         $ip = Request::ip();
+        //获取管理员ID
+        if ($id == null){
+            $id = request()->uid;
+        }
         //实例化对象
         $log = new AdminLog();
         //执行添加并过滤非数据表字段

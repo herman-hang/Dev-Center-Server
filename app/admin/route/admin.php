@@ -10,8 +10,22 @@ Route::group(function () {
     Route::rule('/', 'Index/index', 'GET');
     // 后台桌面
     Route::rule('welcome', 'Index/welcome', 'GET');
-})->middleware([
-    app\middleware\Api::class,
-]);
-// 登录页
-Route::rule('login', 'Login/login', 'POST');
+    // 登录页
+    Route::rule('login', 'Login/login', 'POST');
+    // 系统设置
+    Route::rule('system','System/system','GET');
+    // 系统设置编辑
+    Route::rule('systemEdit','System/systemEdit','POST');
+    // 安全配置
+    Route::rule('security','System/security','GET');
+    // 安全配置编辑
+    Route::rule('securityEdit','System/securityEdit','POST');
+    // 开关管理
+    Route::rule('switch','System/switch','GET');
+    // 开关管理编辑
+    Route::rule('switchEdit','System/switchEdit','POST');
+    // 修改密码
+    Route::rule('pass','System/pass','GET');
+    // 修改密码编辑
+    Route::rule('passEdit','System/passEdit','POST');
+});

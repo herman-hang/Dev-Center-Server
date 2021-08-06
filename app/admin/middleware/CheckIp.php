@@ -5,7 +5,7 @@
  */
 declare (strict_types=1);
 
-namespace app\middleware;
+namespace app\admin\middleware;
 
 use think\facade\Db;
 use think\facade\Request;
