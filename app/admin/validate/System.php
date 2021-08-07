@@ -1,4 +1,8 @@
 <?php
+/**
+ * 系统管理验证器
+ * by:小航 11467102@qq.com
+ */
 declare (strict_types = 1);
 
 namespace app\admin\validate;

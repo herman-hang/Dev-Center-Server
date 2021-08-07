@@ -140,13 +140,13 @@ class System extends Base
         $data = Request::param();
         //查询当前管理员密码
         $info = Db::name('admin')->where('id', request()->uid)->field('password')->find();
+        //对数据进行验证
+        $validate = new AdminValidate();
+        if (!$validate->scenepassEdit()->check($data)) {
+            result(403, $validate->getError());
+        }
         //判断原始密码是否正确
         if (password_verify($data['mpassword'], $info['password'])) {
-            //对数据进行验证
-            $validate = new AdminValidate();
-            if (!$validate->scenepassEdit()->check($data)) {
-                result(403, $validate->getError());
-            }
             //对密码进行加密
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
             // 执行更新

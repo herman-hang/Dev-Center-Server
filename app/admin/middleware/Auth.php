@@ -49,11 +49,11 @@ class Auth
                 //获取token的有效时间
                 $expTime = $token['exp']->getValue();
                 //如果JWT的有效时间小于15分钟则刷新token并返回给客户端
-                if ($expTime - time() < 900) {
+                /*if ($expTime - time() < 900) {
                     //刷新token，会将旧token加入黑名单
                     $newToken = JWTAuth::refresh();
                     header('Authorization:bearer ' . $newToken);
-                }
+                }*/
                 //向控制器传当前管理员的ID
                 $request->uid = $token['uid']->getValue();
             } catch (JWTException $e) {
