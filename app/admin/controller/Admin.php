@@ -64,7 +64,7 @@ class Admin extends Base
     {
         if (request()->isPost()) {
             // 接收数据
-            $data = Request::only(['user', 'password', 'passwords', 'photo', 'name', 'card', 'sex', 'age', 'region', 'mobile', 'email', 'introduction', 'role_id']);
+            $data = Request::only(['user', 'password', 'passwords', 'photo', 'name', 'card', 'sex', 'age', 'region', 'mobile', 'email', 'introduction', 'status', 'role_id']);
             // 验证数据
             $validate = new AdminValidate();
             if (!$validate->sceneAdd()->check($data)) {

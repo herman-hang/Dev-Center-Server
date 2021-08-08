@@ -16,6 +16,7 @@ return [
     'is_login' => [
         'base/log', //记录管理员登录和操作日志
         'index/index', // 后台首页
-        'index/welcome' // 后台我的桌面
+        'index/welcome', // 后台我的桌面
+        'admin/query', //根据ID查询管理员信息
     ]
 ];
