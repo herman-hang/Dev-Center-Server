@@ -85,7 +85,7 @@ class Group extends Base
             if ($res) {
                 // 记录日志
                 $this->log("添加了权限组：{$data['name']}");
-                result(200, "添加成功！");
+                result(201, "添加成功！");
             } else {
                 // 记录日志
                 $this->log("添加权限组：{$data['name']}失败！");

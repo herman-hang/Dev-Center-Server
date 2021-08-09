@@ -23,8 +23,8 @@ class Index extends Base
     {
         //菜单查询
         $menu = Db::name('menu')->where(['pid' => 0, 'status' => 1])->field('id,name,url')->order('sort', 'desc')->select()->toArray();
-        $admin = Db::name('admin')->where('id',request()->uid)->field('rule_id')->find();
-        $group = Db::name('group')->where('id', $admin['rule_id'])->field('rules')->find();
+        $admin = Db::name('admin')->where('id',request()->uid)->field('role_id')->find();
+        $group = Db::name('group')->where('id', $admin['role_id'])->field('rules')->find();
         //转数组
         $groupArray = explode(',',$group['rules']);
         if (request()->uid !== 1){
@@ -33,7 +33,7 @@ class Index extends Base
                     $subMenu = Db::name('menu')->where(['pid'=>$val['id'],'status'=>1])->field('id,name,url')->order('sort','desc')->select();
                     foreach ($subMenu as $k => $va) {
                         if (in_array($va['id'],$groupArray)){
-                            $menu[$key]['submenu'][$k] = $va;
+                            $menu[$key]['children'][$k] = $va;
                         }
                     }
                 }else{
@@ -44,7 +44,7 @@ class Index extends Base
         }else{//超级管理员
             foreach($menu as $key => $val){
                 $subMenu = Db::name('menu')->where(['pid'=>$val['id'],'status'=>1])->field('name,url')->order('sort','desc')->select();
-                $menu[$key]['submenu'] = $subMenu;
+                $menu[$key]['children'] = $subMenu;
             }
         }
         result(200,'获取菜单成功！',$menu);
