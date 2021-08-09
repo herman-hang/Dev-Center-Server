@@ -6,6 +6,9 @@
 
 use think\facade\Route;
 
+/**
+ * 系统管理相关路由
+ */
 Route::group(function () {
     // 后台首页
     Route::rule('index', 'Index/index', 'GET');
@@ -29,8 +32,20 @@ Route::group(function () {
     Route::rule('pass', 'System/pass', 'GET');
     // 修改密码编辑
     Route::rule('passEdit', 'System/passEdit', 'PUT');
+});
+
+/**
+ * 管理员管理相关路由
+ */
+Route::group('admin',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','admin/query',"GET");
+});
+
+/**
+ * 权限组相关路由
+ */
+Route::group('group',function (){
     // 根据ID获取权限组数据
     Route::rule('query/:id','group/query',"GET");
 });

@@ -11,6 +11,7 @@ use think\facade\Db;
 use think\facade\Request;
 use app\admin\model\Group as GroupModel;
 use app\admin\validate\Group as GroupValidate;
+
 class Group extends Base
 {
     /**
@@ -71,24 +72,24 @@ class Group extends Base
      */
     public function add()
     {
-        if (request()->isPost()){
+        if (request()->isPost()) {
             // 接收数据
-            $data = Request::only(['name','instruction','status','rules']);
+            $data = Request::only(['name', 'instruction', 'status', 'rules']);
             // 验证数据
             $validate = new GroupValidate();
-            if (!$validate->check($data)){
-                result(403,$validate->getError());
+            if (!$validate->check($data)) {
+                result(403, $validate->getError());
             }
             // 执行添加
             $res = GroupModel::create($data);
-            if ($res){
+            if ($res) {
                 // 记录日志
                 $this->log("添加了权限组：{$data['name']}");
-                result(200,"添加成功！");
-            }else{
+                result(200, "添加成功！");
+            } else {
                 // 记录日志
                 $this->log("添加权限组：{$data['name']}失败！");
-                result(403,"添加失败！");
+                result(403, "添加失败！");
             }
         }
     }
@@ -101,25 +102,25 @@ class Group extends Base
      */
     public function edit()
     {
-        if (request()->isPut()){
+        if (request()->isPut()) {
             // 接收数据
-            $data = Request::only(['id,name','instruction','rules']);
+            $data = Request::only(['id', 'name', 'instruction', 'rules']);
             // 验证数据
             $validate = new GroupValidate();
-            if (!$validate->check($data)){
-                result(403,$validate->getError());
+            if (!$validate->check($data)) {
+                result(403, $validate->getError());
             }
             // 执行更新
             $group = GroupModel::find($data['id']);
             $res = $group->save($data);
-            if ($res){
+            if ($res) {
                 // 记录日志
                 $this->log("修改了权限组[ID:{$data['id']}]的信息！");
-                result(200,"修改成功！");
-            }else{
+                result(200, "修改成功！");
+            } else {
                 // 记录日志
                 $this->log("修改权限组[ID:{$data['id']}]的信息失败！");
-                result(403,"修改失败！");
+                result(403, "修改失败！");
             }
         }
     }
@@ -132,7 +133,7 @@ class Group extends Base
      */
     public function delete()
     {
-        if (request()->isDelete()){
+        if (request()->isDelete()) {
             // 接收ID
             $id = Request::param('id');
             //转为数组
@@ -140,25 +141,25 @@ class Group extends Base
             // 删除数组中空元素
             $array = array_filter($array);
             //判断是否存在超级权限的ID以及正在使用的ID，存在则不能删除
-            if (!in_array(1,$array)){
-                $info = Db::name('admin')->where('id',request()->uid)->field('role_id')->find();
-                if (!in_array($info['role_id'],$array)){
+            if (!in_array(1, $array)) {
+                $info = Db::name('admin')->where('id', request()->uid)->field('role_id')->find();
+                if (!in_array($info['role_id'], $array)) {
                     //进行删除操作
                     $res = Db::name('group')->delete($array);
-                    if ($res){
+                    if ($res) {
                         // 记录日志
                         $this->log("删除了权限组[ID：{$id}]");
-                        result(200,"删除成功！");
-                    }else{
+                        result(200, "删除成功！");
+                    } else {
                         // 记录日志
                         $this->log("删除权限组[ID：{$id}]失败！");
-                        result(403,"删除失败！");
+                        result(403, "删除失败！");
                     }
-                }else{
-                    result(403,"正在使用的权限组不能删除！");
+                } else {
+                    result(403, "正在使用的权限组不能删除！");
                 }
-            }else{
-                result(403,"超级权限组不能删除！");
+            } else {
+                result(403, "超级权限组不能删除！");
             }
         }
     }
@@ -174,30 +175,30 @@ class Group extends Base
         // 接收数据
         $id = Request::param('id');
         //查询数据
-        $info = Db::name('group')->where('id',$id)->find();
+        $info = Db::name('group')->where('id', $id)->find();
         //切割字符串转为数组
-        $info['rules'] = explode(',',$info['rules']);
+        $info['rules'] = explode(',', $info['rules']);
         // 删除数组中空元素
         $info['rules'] = array_filter($info['rules']);
         //查询一级ID
-        $one = Db::name('menu')->where('pid',0)->field(['id','name'])->select()->toArray();
+        $one = Db::name('menu')->where('pid', 0)->field(['id', 'name'])->select()->toArray();
         //循环一级数组
-        foreach($one as $key => $val){
+        foreach ($one as $key => $val) {
             //查询二级ID
-            $two = Db::name('menu')->where('pid',$val['id'])->field(['id','name','pid'])->select()->toArray();
+            $two = Db::name('menu')->where('pid', $val['id'])->field(['id', 'name', 'pid'])->select()->toArray();
             $one[$key]['children'] = $two;
             //循环二级数组
-            foreach ($one[$key]['children'] as $item => $value){
-                $three = Db::name('menu')->where('pid',$value['id'])->field(['id','name,pid as ppid'])->select()->toArray();
+            foreach ($one[$key]['children'] as $item => $value) {
+                $three = Db::name('menu')->where('pid', $value['id'])->field(['id', 'name,pid as ppid'])->select()->toArray();
                 //循环将pid赋值给$three
-                for ($i=0; $i<count($three); $i++){
+                for ($i = 0; $i < count($three); $i++) {
                     $three[$i]['pid'] = $value['pid'];
                 }
                 $one[$key]['children'][$item]['children'] = $three;
             }
         }
         $info['children'] = $one;
-        result(200,"获取数据成功！",$info);
+        result(200, "获取数据成功！", $info);
     }
 
     /**
@@ -208,24 +209,24 @@ class Group extends Base
      */
     public function statusEdit()
     {
-        if (request()->isPut()){
+        if (request()->isPut()) {
             // 接收权限组ID
             $data = Request::only(['id', 'status']);
-            $info = Db::name('admin')->where('id',request()->uid)->field('role_id')->find();
+            $info = Db::name('admin')->where('id', request()->uid)->field('role_id')->find();
             if ($data['id'] == 1 && $data['status'] == 0) {
                 result(403, "超级权限组的状态不能修改！");
-            }elseif($data['id'] == $info['role_id'] && $data['status'] == 0){
-                result(403,"正在使用的权限组不能修改状态！");
-            }else{
+            } elseif ($data['id'] == $info['role_id'] && $data['status'] == 0) {
+                result(403, "正在使用的权限组不能修改状态！");
+            } else {
                 // 执行更新
                 $group = GroupModel::find($data['id']);
                 $res = $group->save($data);
-                if ($res){
+                if ($res) {
                     $this->log("修改权限组[ID:{$data['id']}]的状态成功！");
-                    result(200,"修改成功！");
-                }else{
+                    result(200, "修改成功！");
+                } else {
                     $this->log("修改权限组[ID:{$data['id']}]的状态失败！");
-                    result(403,"修改失败！");
+                    result(403, "修改失败！");
                 }
             }
         }
