@@ -26,6 +26,7 @@ class Admin extends Validate
         'mobile' => 'mobile|unique:admin,mobile',
         'email' => 'email|unique:admin,email',
         'age' => 'number|between:1,120',
+        'status' => 'require',
         'role_id' => 'require'
     ];
 
@@ -53,6 +54,7 @@ class Admin extends Validate
         'email.unique' => '邮箱已存在！',
         'age.number' => '年龄必须是数字！',
         'age.between' => '年龄只能在1-120岁之间！',
+        'status.require' => '请选择状态',
         'role_id.require' => '权限组不能为空！'
     ];
 
@@ -72,7 +74,7 @@ class Admin extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['user', 'name', 'password', 'passwords', 'mobile', 'email', 'age', 'role_id']);
+        return $this->only(['user', 'name', 'password', 'passwords', 'mobile', 'email', 'age', 'status', 'role_id']);
     }
 
     /**

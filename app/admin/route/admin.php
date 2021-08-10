@@ -48,6 +48,14 @@ Route::group('admin',function (){
 });
 
 /**
+ * 用户相关路由
+ */
+Route::group('user',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','user/query',"GET");
+});
+
+/**
  * 权限组相关路由
  */
 Route::group('group',function (){
@@ -79,4 +87,12 @@ Route::group(function (){
     Route::rule('thirdparty','functional/thirdparty',"GET");
     // 第三方登录配置编辑
     Route::rule('thirdpartyedit','functional/thirdpartyedit',"PUT");
+});
+
+/**
+ * 通知公告相关路由
+ */
+Route::group('notice',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','notice/query',"GET");
 });

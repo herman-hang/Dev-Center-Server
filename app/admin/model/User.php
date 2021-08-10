@@ -1,6 +1,6 @@
 <?php
 /**
- * 日志记录模型
+ * 用户模型
  * by:小航 11467102@qq.com
  */
 declare (strict_types = 1);
@@ -12,7 +12,7 @@ use think\Model;
 /**
  * @mixin \think\Model
  */
-class AdminLog extends Model
+class User extends Model
 {
     //
 }

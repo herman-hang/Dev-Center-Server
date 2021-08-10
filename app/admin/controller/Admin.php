@@ -129,7 +129,7 @@ class Admin extends Base
                 result(200, "修改成功！");
             } else {
                 //记录日志
-                $this->log("修改管理员：{$data['user']}的个人信息失败！");
+                $this->log("修改管理员：{$info['user']}的个人信息失败！");
                 result(403, '修改失败！');
             }
         }
@@ -172,6 +172,8 @@ class Admin extends Base
                 if (!in_array(request()->uid, $array)) {
                     //进行删除操作
                     $res = Db::name('admin')->delete($array);
+                    // 转为字符串
+                    $array = implode(',',$array);
                     if ($res) {
                         $this->log("删除了管理员[ID:{$array}]");
                         result(200, "删除成功！");
