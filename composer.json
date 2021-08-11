@@ -28,7 +28,8 @@
         "edward1108/edward-captcha": "^1.1",
         "yurunsoft/yurun-oauth-login": "^3.0",
         "topthink/think-api": "^1.0",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "thans/thinkphp-filesystem-cloud": "^1.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

@@ -32,7 +32,7 @@ class System extends Base
     public function systemEdit()
     {
         //接收所有提交数值
-        $data = Request::param();
+        $data = Request::except(['file_storage','max_logerror','ip']);
         //实例化
         $validate = new SystemValidate;
         //验证数据
@@ -57,7 +57,7 @@ class System extends Base
     public function security()
     {
         //当前的信息
-        $info = Db::name('system')->where('id', 1)->field('max_logerror,ip')->find();
+        $info = Db::name('system')->where('id', 1)->field('file_storage,max_logerror,ip')->find();
         result(200, "获取安全配置信息成功！", $info);
     }
 
@@ -68,13 +68,13 @@ class System extends Base
     public function securityEdit()
     {
         //接收数值
-        $data = Request::param();
+        $data = Request::only(['file_storage','max_logerror','ip']);
         // 判断该参数是否为数字或者是数字字符串
         if (!is_numeric($data['max_logerror'])) {
             result(403, "允许登录错误次数只能是数字！");
         }
         // 执行更新
-        $res = Db::name('system')->where('id', 1)->update(['max_logerror' => $data['max_logerror']]);
+        $res = Db::name('system')->where('id', 1)->update($data);
         if ($res) {
             $this->log("修改了安全配置信息！");
             result(200, "修改成功！");

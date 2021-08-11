@@ -96,3 +96,11 @@ Route::group('notice',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','notice/query',"GET");
 });
+
+/**
+ * 广告相关路由
+ */
+Route::group('advertising',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','advertising/query',"GET");
+});

@@ -18,5 +18,8 @@ return [
         'index/index', // 后台首页
         'index/welcome', // 后台我的桌面
         'admin/query', //根据ID查询管理员信息
+        'user/query',//根据ID查询用户信息
+        'notice/query',//根据ID查询公告信息
+        'base/upload',//文件上传
     ]
 ];
