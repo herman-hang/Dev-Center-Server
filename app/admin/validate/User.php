@@ -21,7 +21,8 @@ class User extends Validate
         'user' => 'require|length:5,15|alphaNum|unique:user,user',
         'password' => 'require|length:6,15',
         'status' => 'require',
-        'is_develpper' => 'require'
+        'sex' => 'require',
+        'is_developer' => 'require'
     ];
 
     /**
@@ -38,7 +39,8 @@ class User extends Validate
         'password.require' => '密码不能为空！',
         'password.length' => '密码只能在6到15位之间！',
         'status.require' => '请选择用户状态！',
-        'is_develpper.require' => '请选择是否为开发者！'
+        'sex.require' => '请选择年龄！',
+        'is_developer.require' => '请选择是否为开发者！'
     ];
 
     /**
@@ -47,7 +49,7 @@ class User extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['user','password','status','is_develpper']);
+        return $this->only(['user', 'password', 'sex', 'status', 'is_developer']);
     }
 
     /**
@@ -56,6 +58,6 @@ class User extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['user','password','is_develpper']);
+        return $this->only(['user', 'password', 'sex', 'is_developer']);
     }
 }

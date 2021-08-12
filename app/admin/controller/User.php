@@ -26,7 +26,8 @@ class User extends Base
             //查询所有用户
             $info = Db::name('user')
                 ->whereLike('nickname|user|mobile|email', "%" . $data['keywords'] . "%")
-                ->withoutField(['wx_openid','qq_openid','weibo_openid'])
+                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid'])
+                ->where('is_developer', '0')
                 ->order('create_time', 'desc')
                 ->paginate([
                     'list_rows' => $data['per_page'],
@@ -91,6 +92,18 @@ class User extends Base
                 // 重新hash加密
                 $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
             }
+            // 判断是否已经设置了开发者，设置了则判断开发者数据表是否存在数据，不存在则添加
+            if ($data['is_developer'] == '2') {
+                $developer = Db::name('user_developer')->where('user_id', $data['id'])->find();
+                if (empty($developer)) {
+                    // 插入一条开发者数据
+                    $result = Db::name('user_developer')->insert(['user_id' => $data['id'], 'level' => '0']);
+                    if (!$result) {
+                        $this->log("用户[ID：{$data['id']}]成为开发者失败！");
+                        result(403, "修改失败！");
+                    }
+                }
+            }
             $res = $user->save($data);
             if ($res) {
                 $this->log("修改用户{$info['user']}信息成功！");
@@ -113,8 +126,8 @@ class User extends Base
         // 接收用户ID
         $id = Request::param('id');
         // 查询用户信息
-        $info = Db::name('user')->withoutField(['wx_openid','qq_openid','weibo_openid'])->where('id', $id)->find();
-        result(200, "获取数据成功！",$info);
+        $info = Db::name('user')->withoutField(['wx_openid', 'qq_openid', 'weibo_openid'])->where('id', $id)->find();
+        result(200, "获取数据成功！", $info);
     }
 
     /**
@@ -132,7 +145,7 @@ class User extends Base
             // 删除操作
             $res = Db::name('user')->delete($array);
             // 转为字符串
-            $array = implode(',',$array);
+            $array = implode(',', $array);
             if ($res) {
                 $this->log("删除了用户[ID：{$array}]");
                 result(200, "删除成功！");
@@ -173,7 +186,7 @@ class User extends Base
      */
     public function buyLog()
     {
-        if (request()->isGet()){
+        if (request()->isGet()) {
             // 接收数据
             $data = Request::only(['keywords', 'per_page', 'current_page']);
             //查询所有用户

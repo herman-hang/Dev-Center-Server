@@ -104,3 +104,11 @@ Route::group('advertising',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','advertising/query',"GET");
 });
+
+/**
+ * 开发者相关路由
+ */
+Route::group('developer',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','developer/query',"GET");
+});
