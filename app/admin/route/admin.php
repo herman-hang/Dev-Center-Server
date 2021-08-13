@@ -120,3 +120,12 @@ Route::group('upgrade',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','upgrade/query',"GET");
 });
+
+
+/**
+ * 应用中心相关路由
+ */
+Route::group('app',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','app/query',"GET");
+});
