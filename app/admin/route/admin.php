@@ -112,3 +112,11 @@ Route::group('developer',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','developer/query',"GET");
 });
+
+/**
+ * 升级中心相关路由
+ */
+Route::group('upgrade',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','upgrade/query',"GET");
+});
