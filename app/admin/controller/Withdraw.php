@@ -61,6 +61,15 @@ class Withdraw extends Base
             // 执行更新
             $res = Db::name('developer_withdraw')->where('id', $id)->update(['status' => '1']);
             if ($res) {
+                // 构造信息，发送通知邮件
+                $info = Db::name('developer_withdraw')->where('id', $id)->find();
+                $user = Db::name('user')->where('id',$info['user_id'])->field('email,user')->find();
+                $system = Db::name('system')->where('id', '1')->field('name')->find();
+                $title = "恭喜您，提现成功！";
+                $time = date("Y-m-d H:i:s",$info['create_time']);
+                $content = "您在 <strong>{$system['name']}</strong> {$time}有一笔<strong style='font-size: 16px'>{$info['money']}元</strong>的提现请求已经通过审核，请登录{$system['name']}进行查看！";
+                // 发送通知邮件
+                $this->sendEmail($user['email'], $title, $content, $user['user']);
                 $this->log("审核通过了提现订单[ID：{$id}]");
                 result(200, "已通过！");
             } else {
@@ -82,6 +91,15 @@ class Withdraw extends Base
             // 执行更新
             $res = Db::name('developer_withdraw')->where('id', $data['id'])->update(['status' => '2', 'cause' => $data['cause']]);
             if ($res){
+                // 构造信息，发送通知邮件
+                $info = Db::name('developer_withdraw')->where('id', $data['id'])->find();
+                $user = Db::name('user')->where('id',$info['user_id'])->field('email,user')->find();
+                $system = Db::name('system')->where('id', '1')->field('name')->find();
+                $title = "很遗憾，提现失败！";
+                $time = date("Y-m-d H:i:s",$info['create_time']);
+                $content = "您在 <strong>{$system['name']}</strong> {$time}有一笔<strong style='font-size: 16px'>{$info['money']}元</strong>的提现请求已经被我们驳回，请登录{$system['name']}按驳回原因修改后再次提交申请审核！";
+                // 发送通知邮件
+                $this->sendEmail($user['email'], $title, $content, $user['user']);
                 $this->log("已驳回提现订单[ID：{$data['id']}]");
                 result(200,"驳回成功！");
             }else{

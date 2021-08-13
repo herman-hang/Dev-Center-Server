@@ -9,7 +9,7 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\Request;
-
+use app\admin\model\User as UserModel;
 class Developer extends Base
 {
     /**
@@ -133,7 +133,7 @@ class Developer extends Base
             // 接收用户ID
             $id = Request::param('id');
             // 成为开发者
-            $result = Db::name('user')->where('id', $id)->update(['is_developer' => 2]);
+            $result = Db::name('user')->where('id', $id)->update(['is_developer' => '2','cause'=>NULL]);
             // 判断开发者数据表是否存在该用户的信息
             if ($result) {
                 $developer = Db::name('user_developer')->where('user_id', $id)->find();
@@ -145,6 +145,14 @@ class Developer extends Base
                         result(403, "操作失败！");
                     }
                 }
+                // 构造信息，发布通知邮件
+                $info = UserModel::find($id);
+                $system = Db::name('system')->where('id', '1')->field('name')->find();
+                $title = "恭喜您，审核通过！";
+                // 邮件内容
+                $content = "<h3>打造生态，我们与您同在！</h3>您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经审核通过，恭喜您成为我们开发团队的一员！";
+                // 发送通知邮件
+                $this->sendEmail($info['email'], $title, $content, $info['user']);
                 $this->log("用户[ID：{$id}]已成为开发者！");
                 result(200, "已通过！");
             } else {
@@ -166,6 +174,14 @@ class Developer extends Base
             // 更新操作
             $res = Db::name('user')->where('id', $data['id'])->update(['is_developer' => '3', 'cause' => $data['cause']]);
             if ($res) {
+                // 构造信息，发布通知邮件
+                $info = UserModel::find($data['id']);
+                $system = Db::name('system')->where('id', '1')->field('name')->find();
+                $title = "很遗憾，审核失败！";
+                // 邮件内容
+                $content = "抱歉！您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经被我们拒绝，请登录{$system['name']}按驳回原因修改后再次提交申请审核！";
+                // 发送通知邮件
+                $this->sendEmail($info['email'], $title, $content, $info['user']);
                 $this->log("已驳回用户[ID：{$data['id']}]成为开发者请求！");
                 result(200, "驳回成功！");
             } else {

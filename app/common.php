@@ -152,3 +152,131 @@ function codeStr($type = 0)
     }
     return false;
 }
+
+/**
+ * @param string $domain 网站域名，带http/https
+ * @param string $logo 网站LOGO
+ * @param string $user 接收邮件用户名（本站）
+ * @param string $content 邮件内容
+ * @param string $name 网站名称
+ * @return mixed
+ */
+function emailHtml(string $domain, string $logo, string $user, string $content, string $name)
+{
+    $html = <<<EOT
+<div style="position:relative;font-size:14px;height:auto;padding:15px 15px 10px 15px;z-index:1;zoom:1;line-height:1.7;"
+	class="body">
+	<div id="qm_con_body">
+		<div id="mailContentContainer" class="qmbox qm_con_body_content qqmail_webmail_only" style="">
+			<table style="font-family:'Microsoft YaHei';" width="800" cellspacing="0" cellpadding="0" border="0"
+				bgcolor="#ffffff" align="center">
+				<tbody>
+					<tr>
+						<td>
+							<table style="font-family:'Microsoft YaHei';" width="800" height="48" cellspacing="0"
+								cellpadding="0" border="0" bgcolor="#409EFF" align="center">
+								<tbody>
+									<tr>
+										<td border="0" style="padding-left:20px;" valign="middle" height="48"
+											align="center">
+											<a href="{$domain}" target="_blank" rel="noopener">
+												<img src="{$logo}" width="80"
+													height="48" border="0">
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<table
+								style=" border:1px solid #edecec; border-top:none; padding:0 20px;font-size:14px;color:#333333;"
+								width="800" cellspacing="0" cellpadding="0" border="0" align="left">
+								<tbody>
+									<tr>
+										<td border="0" colspan="2"
+											style=" font-size:16px;vertical-align:bottom;font-family:'Microsoft YaHei';"
+											width="760" height="56" align="left">尊敬的
+											<a target="_blank"
+												style="font-size:16px; font-weight:bold;text-decoration: none;">{$user}</a>：
+										</td>
+									</tr>
+									<tr>
+										<td border="0" colspan="2" width="760" height="30" align="left">&nbsp;</td>
+									</tr>
+									<tr>
+										<td border="0"
+											style=" width:40px; text-align:left;vertical-align:middle; line-height:32px; float:left;"
+											width="40" valign="middle" height="32" align="left"></td>
+										<td border="0"
+											style=" width:720px; text-align:left;vertical-align:middle;line-height:32px;font-family:'Microsoft YaHei';"
+											width="720" valign="middle" height="32" align="left">
+											{$content}
+										</td>
+									</tr>
+
+									<tr>
+										<td colspan="2"
+											style="padding-bottom:16px; border-bottom:1px dashed #e5e5e5;font-family:'Microsoft YaHei';text-align: right;"
+											width="720" height="14">{$name}</td>
+									</tr>
+									<tr>
+										<td colspan="2"
+											style="padding:8px 0 28px;color:#999999; font-size:12px;font-family:'Microsoft YaHei';"
+											width="720" height="14">此为系统邮件请勿回复</td>
+									</tr>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<style type="text/css">
+				.qmbox style,
+				.qmbox script,
+				.qmbox head,
+				.qmbox link,
+				.qmbox meta {
+					display: none !important;
+				}
+
+				.qmbox body {
+					margin: 0 auto;
+					padding: 0;
+					font-family: Microsoft Yahei, Tahoma, Arial;
+					color: #333333;
+					background-color: #fff;
+					font-size: 12px;
+				}
+
+				.qmbox a {
+					color: #00a2ca;
+					line-height: 22px;
+					text-decoration: none;
+				}
+
+				.qmbox a:hover {
+					text-decoration: underline;
+					color: #00a2ca;
+				}
+
+				.qmbox td {
+					font-family: 'Microsoft YaHei';
+				}
+
+				#mailContentContainer .txt {
+					height: auto;
+				}
+			</style>
+		</div>
+	</div>
+</div>
+EOT;
+    return $html;
+}
