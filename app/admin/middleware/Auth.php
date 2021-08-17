@@ -15,7 +15,7 @@ use think\facade\Request;
 class Auth
 {
     /**
-     * 处理请求
+     * 权限验证处理请求
      *
      * @param \think\Request $request
      * @param \Closure $next
@@ -27,6 +27,7 @@ class Auth
         $controller = Request::controller();
         // 当前访问的方法
         $action = Request::action();
+        // 拼接url
         $url = strtolower($controller . '/' . $action);
         //获取不需要验证登录和权限的路由
         $notAuthRoute = Config::get('auth');
@@ -37,6 +38,7 @@ class Auth
             try {
                 // 验证token, 并获取token中的payload部分
                 $token = JWTAuth::auth();
+                // 将数组中的每一项全部转为小写
                 $isLogin = array_map('strtolower', $notAuthRoute['is_login']);
                 // $url存在数组则跳过，不存在开始检测权限，超级管理员（ID=1）也跳过
                 if (!in_array($url, $isLogin) && $token['uid']->getValue() !== 1) {
@@ -57,7 +59,7 @@ class Auth
                 //向控制器传当前管理员的ID
                 $request->uid = $token['uid']->getValue();
             } catch (JWTException $e) {
-                result(401, $e->getMessage());
+                result(-1, $e->getMessage());
             }
         }
         return $next($request);

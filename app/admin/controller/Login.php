@@ -21,7 +21,7 @@ class Login extends Base
     {
         if (request()->isPost()) {
             //接收数据
-            $data = Request::post();
+            $data = Request::only(['user', 'password', 'code']);
             //验证数据
             $validate = new LoginValidate();
             if (!$validate->check($data)) {
@@ -38,11 +38,11 @@ class Login extends Base
             //登录错误次数到达后的封禁时间
             $banTime = time() + $BAN * 60;
             if (empty($admin)) {//管理员不存在
-                result(403, '管理员不存在！');
+                result(401, '管理员不存在！');
             } else {//管理员存在
                 if ($admin['login_error'] == 0) {//不存在密码登录错误的情况
                     if ($admin['status'] == 0) {//管理员已停用
-                        result(403, '管理员已停用！');
+                        result(401, '管理员已停用！');
                     } else {//管理员状态正常（已启用状态）
                         //哈希加密
                         if (password_verify($data['password'], $admin['password'])) {//密码正确
@@ -68,7 +68,7 @@ class Login extends Base
                 } else {//存在密码登录错误情况
                     //获取验证码的key
                     $key = Cache::pull('captcha_' . Request::ip());
-                    if (empty($key)){
+                    if (empty($key)) {
                         //调用生成验证码方法
                         $code = $this->captcha();
                         result(403, '网络异常，请重新登录！', $code);
@@ -84,13 +84,13 @@ class Login extends Base
                     //解除登录错误的计算时间，恢复初始化
                     if ($admin->getData('error_time') <= time()) {
                         //将登录错误错误时间,登录错误次数清零
-                        $admin->save(['error_time' => NULL,'login_error' => 0]);
+                        $admin->save(['error_time' => NULL, 'login_error' => 0]);
                         //判断防止封禁时间大于等于登录错误时间出现的BUG
                         if ($admin->getData('ban_time') == NULL || $admin->getData('ban_time') <= time()) {
                             //将封禁时间设置为空
                             $admin->save(['ban_time' => NULL]);
                             if ($admin['status'] == 0) {
-                                result(403, '管理员已停用！');
+                                result(401, '管理员已停用！');
                             } else {
                                 if (password_verify($data['password'], $admin['password'])) {//密码正确
                                     //第三方登录绑定
@@ -134,7 +134,7 @@ class Login extends Base
                             //将封禁时间设置为空
                             $admin->save(['ban_time' => NULL]);
                             if ($admin['status'] == 0) {
-                                result(403, '管理员已停用！');
+                                result(401, '管理员已停用！');
                             } else {
                                 //判断登录错误次数是否大于或等于指定登录错误次数
                                 if ($admin->getData('login_error') >= $system->getData('max_logerror')) {
@@ -152,7 +152,7 @@ class Login extends Base
                                         //登录总次数自增1
                                         $admin->inc('login_sum')->update();
                                         //登录错误次数清零,登录错误时间清空
-                                        $admin->save(['login_error' => 0,'error_time' => NULL]);
+                                        $admin->save(['login_error' => 0, 'error_time' => NULL]);
                                         //记录日志
                                         $this->log("登录成功！", 1, $admin['id']);
                                         //参数为用户认证的信息，请自行添加
@@ -204,6 +204,20 @@ class Login extends Base
         //删除数组中的key和code
         unset($code['key'], $code['code']);
         return $code;
+    }
+
+    /**
+     * 获取验证码
+     */
+    public function getCaptcha()
+    {
+        //生成验证码
+        $code = CaptchaApi::create();
+        //存入key
+        Cache::set('captcha_' . Request::ip(), $code['key'], 600);
+        //删除数组中的key和code
+        unset($code['key'], $code['code']);
+        result(200, "获取验证码成功！", $code);
     }
 
     /**

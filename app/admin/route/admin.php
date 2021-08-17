@@ -11,11 +11,13 @@ use think\facade\Route;
  */
 
 // 后台首页
-Route::rule('index', 'Index/index', 'GET');
+Route::rule('home', 'Index/home', 'GET');
 // 后台桌面
 Route::rule('welcome', 'Index/welcome', 'GET');
 // 登录页
 Route::rule('login', 'Login/login', 'POST');
+// 获取验证码
+Route::rule('captcha', 'Login/getCaptcha', 'GET');
 
 /**
  * 系统管理相关路由
@@ -128,4 +130,13 @@ Route::group('upgrade',function (){
 Route::group('app',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','app/query',"GET");
+});
+
+
+/**
+ * 应用中心相关路由
+ */
+Route::group('authorization',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','authorization/query',"GET");
 });

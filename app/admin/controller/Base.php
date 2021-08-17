@@ -106,6 +106,7 @@ class Base extends BaseController
     }
 
     /**
+     * 邮件发送
      * @param string $email 接收邮箱
      * @param string $title 邮件标题
      * @param string $content 邮件正文

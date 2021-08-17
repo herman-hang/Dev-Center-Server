@@ -177,11 +177,10 @@ function emailHtml(string $domain, string $logo, string $user, string $content, 
 								cellpadding="0" border="0" bgcolor="#409EFF" align="center">
 								<tbody>
 									<tr>
-										<td border="0" style="padding-left:20px;" valign="middle" height="48"
+										<td border="0" style="padding-left:20px;" height="48"
 											align="center">
-											<a href="{$domain}" target="_blank" rel="noopener">
-												<img src="{$logo}" width="80"
-													height="48" border="0">
+											<a href="{$domain}" target="_blank">
+											<img src="{$logo}" alt="{$name}">
 											</a>
 										</td>
 									</tr>

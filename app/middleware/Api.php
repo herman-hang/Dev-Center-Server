@@ -8,13 +8,11 @@ declare (strict_types = 1);
 namespace app\middleware;
 use thans\jwt\exception\JWTException;
 use thans\jwt\facade\JWTAuth;
-use think\facade\Request;
 
 class Api
 {
     /**
-     * 处理请求
-     *
+     * token验证处理请求
      * @param \think\Request $request
      * @param \Closure       $next
      * @return Response
