@@ -100,10 +100,14 @@ class Advertising extends Base
         if (request()->isDelete()) {
             // 接收ID
             $id = Request::param('id');
-            //转为数组
-            $array = explode(',', $id);
-            // 删除数组中空元素
-            $array = array_filter($array);
+            if (!strpos($id, ',')) {
+                $array = array($id);
+            } else {
+                //转为数组
+                $array = explode(',', $id);
+                // 删除数组中空元素
+                $array = array_filter($array);
+            }
             // 删除操作
             $res = Db::name('advertising')->delete($array);
             // 转为字符串

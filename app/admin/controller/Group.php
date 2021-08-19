@@ -136,10 +136,14 @@ class Group extends Base
         if (request()->isDelete()) {
             // 接收ID
             $id = Request::param('id');
-            //转为数组
-            $array = explode(',', $id);
-            // 删除数组中空元素
-            $array = array_filter($array);
+            if (!strpos($id, ',')) {
+                $array = array($id);
+            } else {
+                //转为数组
+                $array = explode(',', $id);
+                // 删除数组中空元素
+                $array = array_filter($array);
+            }
             //判断是否存在超级权限的ID以及正在使用的ID，存在则不能删除
             if (!in_array(1, $array)) {
                 $info = Db::name('admin')->where('id', request()->uid)->field('role_id')->find();

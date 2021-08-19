@@ -9,6 +9,7 @@ namespace app\admin\controller;
 
 use auth\Auth;
 use think\facade\Db;
+use think\facade\Env;
 use think\facade\Request;
 
 class Index extends Base

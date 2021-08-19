@@ -162,10 +162,14 @@ class Admin extends Base
         if (request()->isDelete()) {
             //接收前台传过来的ID
             $id = Request::param('id');
-            //转为数组
-            $array = explode(',', $id);
-            // 删除数组中空元素
-            $array = array_filter($array);
+            if (!strpos($id, ',')) {
+                $array = array($id);
+            } else {
+                //转为数组
+                $array = explode(',', $id);
+                // 删除数组中空元素
+                $array = array_filter($array);
+            }
             //判断是否存在超级管理员，是则不能删除
             if (!in_array(1, $array)) {
                 //判断是否存在自己,是则不能删除

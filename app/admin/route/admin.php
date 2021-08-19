@@ -6,17 +6,13 @@
 
 use think\facade\Route;
 
-/**
- * 系统管理相关路由
- */
-
 // 后台首页
 Route::rule('home', 'Index/home', 'GET');
 // 后台桌面
 Route::rule('welcome', 'Index/welcome', 'GET');
 // 登录页
 Route::rule('login', 'Login/login', 'POST');
-// 获取验证码
+// 获取图片验证码
 Route::rule('captcha', 'Login/getCaptcha', 'GET');
 
 /**
