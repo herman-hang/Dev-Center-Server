@@ -22,7 +22,6 @@ return [
         // 更多的磁盘配置信息
         'aliyun' => [
             'type'         => 'aliyun',
-<<<<<<< HEAD
             'accessId'     => 'LTAI4GKuu2vGxxxzxxxxxWUgDt7Q4',
             'accessSecret' => 'ruVlmwtgG6fxxxxrq5xxxxxMur9p6FIOD4Y',
             'bucket'       => 'yundaohang',
@@ -35,25 +34,10 @@ return [
             'secretKey' => 'lKUVTTmXZxqgFwxxxxBHe4Cw6-VHfaRpYjgC',
             'bucket'    => 'xxxxx-dev',
             'url'       => 'http://xxx.hn-bkt.clouddn.com',//不要斜杠结尾，此处为URL地址域名。
-=======
-            'accessId'     => 'LTAI4GKuu2vG7821xxx3HzWUgDt7Q4',
-            'accessSecret' => 'ruVlmwtgG6fDG2139urq5Mur9p6xxFIOD4Y',
-            'bucket'       => 'yundaohang',
-            'endpoint'     => 'oss-cn-beijing.aliyuncs.com',
-            'url'          => 'http://XXXX.oss-cn-beijing.aliyuncs.com',//不要斜杠结尾，此处为URL地址域名。
-        ],
-        'qiniu'  => [
-            'type'      => 'qiniu',
-            'accessKey' => '8m6_TzcGQjm_VfVh8NYXJ7fxxxdsfCuB6edqzYoCCD7vNYV',
-            'secretKey' => 'lKUVTTmXZxqgFwIAnQ2Hp6sxxdfBHe4Cw6-VHfaRpYjgC',
-            'bucket'    => 'xiaohang-dev',
-            'url'       => 'http://XXXX.hn-bkt.clouddn.com',//不要斜杠结尾，此处为URL地址域名。
->>>>>>> 713de31762daf570edacd59cb3978b78e9977f73
         ],
         'qcloud' => [
             'type'       => 'qcloud',
             'region'      => 'ap-guangzhou', //bucket 所属区域 英文
-<<<<<<< HEAD
             'appId'      => '12xxxxx3', // 域名中数字部分
             'secretId'   => 'AKIDtcv2uWxxxxxxchn8FFE7vUn5Nde',
             'secretKey'  => 'yindDZxxxxxxh3A7qSq282f',
@@ -61,15 +45,6 @@ return [
             'timeout'         => 60,
             'connect_timeout' => 60,
             'cdn'             => 'https://xxxx-1251xxxx23.cos.ap-guangzhou.myqcloud.com',//您的 CDN 域名
-=======
-            'appId'      => '125152396223', // 域名中数字部分
-            'secretId'   => 'AKIDtcv2uWPCG7kLiqsdfxxxQLSchn8FFE7vUn5Nde',
-            'secretKey'  => 'yindDZzC9qHo9E4mHdsfWUE5h3A7qSq282f',
-            'bucket'          => 'yundaohang-1251596223',
-            'timeout'         => 60,
-            'connect_timeout' => 60,
-            'cdn'             => 'https://XXXX-125152396223.cos.ap-guangzhou.myqcloud.com',//您的 CDN 域名
->>>>>>> 713de31762daf570edacd59cb3978b78e9977f73
             'scheme'          => 'https',
             'read_from_cdn'   => false,
         ]
