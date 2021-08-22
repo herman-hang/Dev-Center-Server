@@ -18,8 +18,10 @@ class Notice extends Validate
      * @var array
      */
     protected $rule = [
-        'title' => 'length:0,64',
-        'status' => 'require'
+        'title' => 'require|length:0,64',
+        'status' => 'require',
+        'content'=>'require',
+        'inscribe'=>'require'
     ];
 
     /**
@@ -29,8 +31,11 @@ class Notice extends Validate
      * @var array
      */
     protected $message = [
+        'title.require' => '标题不能为空',
         'title.length' => '标题只能在0到64个字符之间',
-        'status.require' => '请选择状态！'
+        'status.require' => '请选择状态！',
+        'content.require' => '内容不能为空！',
+        'inscribe.require' => '落款不能为空！',
     ];
 
     /**
@@ -39,7 +44,7 @@ class Notice extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['title','status']);
+        return $this->only(['title','content','inscribe']);
     }
 
     /**
@@ -48,6 +53,6 @@ class Notice extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['title']);
+        return $this->only(['title','content','inscribe']);
     }
 }

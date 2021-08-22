@@ -102,34 +102,31 @@ class Admin extends Base
             if (!$validate->sceneEdit()->check($data)) {
                 result(403, $validate->getError());
             }
-            // 查询当前管理员的密码
-            $info = Db::name('admin')->where('id', $data['id'])->field('user,password')->find();
             // 执行更新
             $admin = AdminModel::find($data['id']);
             //如果为超级管理员，则可以修改密码，否则不行
             if (request()->uid == 1) {
                 // 判断密码是否已经修改
-                if ($data['password'] !== $info['password']) {
+                if ($data['password'] !== '') {
                     // 重新hash加密
                     $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
                 }
-                $res = $admin->save($data);
             } else {
                 // 普通管理不能修改密码，若存在密码则删除
                 if (isset($data['password'])) {
                     // 删除密码
                     unset($data['password']);
                 }
-                // 执行更新
-                $res = $admin->save($data);;
             }
+            // 执行更新
+            $res = $admin->save($data);;
             if ($res) {
                 //记录日志
-                $this->log("修改了管理员：{$info['user']}的个人信息！");
+                $this->log("修改了管理员：{$admin['user']}的个人信息！");
                 result(200, "修改成功！");
             } else {
                 //记录日志
-                $this->log("修改管理员：{$info['user']}的个人信息失败！");
+                $this->log("修改管理员：{$admin['user']}的个人信息失败！");
                 result(403, '修改失败！');
             }
         }
@@ -146,9 +143,9 @@ class Admin extends Base
         // 接收ID
         $id = Request::param('id');
         // 查询当前编辑的管理员
-        $info = Db::view('admin', 'id,user,password,photo,name,card,sex,age,region,mobile,email,introduction,create_time,update_time,status,role_id')
+        $info = Db::view('admin', 'id,user,password,photo,name,card,sex,age,region,mobile,email,introduction,create_time,update_time,role_id')
+            ->view('group', 'name as rolename', 'group.id=admin.role_id')
             ->where('admin.id', $id)
-            ->view('group', 'name as rolename', 'group.id=admin.id')
             ->find();
         result(200, "获取数据成功！", $info);
     }
@@ -179,10 +176,10 @@ class Admin extends Base
                     // 转为字符串
                     $array = implode(',',$array);
                     if ($res) {
-                        $this->log("删除了管理员[ID:{$array}]");
+                        $this->log("删除了管理员[ID：{$array}]");
                         result(200, "删除成功！");
                     } else {
-                        $this->log("删除管理员[ID:{$array}]失败！");
+                        $this->log("删除管理员[ID：{$array}]失败！");
                         result(403, "删除失败！");
                     }
                 } else {
@@ -212,10 +209,10 @@ class Admin extends Base
                 $admin = AdminModel::find($data['id']);
                 $res = $admin->save($data);
                 if ($res) {
-                    $this->log("修改了管理员[id:{$data['id']}的状态！]");
+                    $this->log("修改了管理员[id:{$data['id']}]的状态！");
                     result(200, "修改成功！");
                 } else {
-                    $this->log("修改管理员[id:{$data['id']}的状态失败！]");
+                    $this->log("修改管理员[id:{$data['id']}]的状态失败！");
                     result(403, "修改失败！");
                 }
             }

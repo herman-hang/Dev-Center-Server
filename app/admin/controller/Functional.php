@@ -117,7 +117,7 @@ class Functional extends Base
             $res = $client->smsSend()
                 ->withSignId($data['sign_id'])
                 ->withTemplateId('2')
-                ->withPhone($data['think_phone'])
+                ->withPhone($data['phone'])
                 ->withParams(json_encode(['code' => $code]))
                 ->request();
             $res = $res['code'];
@@ -130,7 +130,7 @@ class Functional extends Base
             //自定义测试短信内容
             $content = "【测试】这是一条测试内容，您的验证码是{$code}，在{$time}分钟有效。";
             //调用发送函数
-            $res = sendSms($data['smsbao_account'], $data['smsbao_pass'], $content, $data['smsbao_phone']);
+            $res = sendSms($data['smsbao_account'], $data['smsbao_pass'], $content, $data['phone']);
         }
         if ($res == 0) {
             $this->log("测试发送短信！");
@@ -216,7 +216,7 @@ class Functional extends Base
     public function thirdpartyEdit()
     {
         //接收前台传过来的值
-        $data = Request::param();
+        $data = Request::except(['qq_callback','wx_callback','weibo_callback','gitee_callback','github_callback']);
         //执行更新操作
         $res = Db::name('thirdparty')->where('id', 1)->update($data);
         //判断是否操作成功，true为操作成功

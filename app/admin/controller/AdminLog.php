@@ -25,6 +25,7 @@ class AdminLog extends Base
                 ->view('admin', 'user', 'admin.id=admin_log.admin_id')
                 ->where('admin_log.admin_id', request()->uid)
                 ->where('type', $data['type'])
+                ->whereLike('admin_id|content', "%" . $data['keywords'] . "%")
                 ->order('create_time', 'desc')
                 ->paginate([
                     'list_rows' => $data['per_page'],

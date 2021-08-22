@@ -10,6 +10,8 @@ use think\facade\Route;
 Route::rule('home', 'Index/home', 'GET');
 // 后台桌面
 Route::rule('welcome', 'Index/welcome', 'GET');
+// 清除缓存
+Route::rule('clear', 'Index/clear', 'POST');
 // 登录页
 Route::rule('login', 'Login/login', 'POST');
 // 获取图片验证码
@@ -53,13 +55,6 @@ Route::group('user',function (){
     Route::rule('query/:id','user/query',"GET");
 });
 
-/**
- * 权限组相关路由
- */
-Route::group('group',function (){
-    // 根据ID获取权限组数据
-    Route::rule('query/:id','group/query',"GET");
-});
 
 /**
  * 功能配置相关路由

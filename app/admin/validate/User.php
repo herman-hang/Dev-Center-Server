@@ -20,6 +20,7 @@ class User extends Validate
     protected $rule = [
         'user' => 'require|length:5,15|alphaNum|unique:user,user',
         'password' => 'require|length:6,15',
+        'passwords' => 'require|confirm:password',
         'status' => 'require',
         'sex' => 'require',
         'is_developer' => 'require'
@@ -38,6 +39,8 @@ class User extends Validate
         'user.unique' => '用户名已存在！',
         'password.require' => '密码不能为空！',
         'password.length' => '密码只能在6到15位之间！',
+        'passwords.require' => '确认密码不能为空！',
+        'passwords.confirm' => '两次密码不一致！',
         'status.require' => '请选择用户状态！',
         'sex.require' => '请选择年龄！',
         'is_developer.require' => '请选择是否为开发者！'
@@ -49,7 +52,7 @@ class User extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['user', 'password', 'sex', 'status', 'is_developer']);
+        return $this->only(['user', 'password', 'passwords', 'sex', 'status', 'is_developer']);
     }
 
     /**
@@ -58,6 +61,6 @@ class User extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['user', 'password', 'sex', 'is_developer']);
+        return $this->only(['user', 'password', 'sex', 'is_developer'])->remove('password','require');
     }
 }

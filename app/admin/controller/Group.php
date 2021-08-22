@@ -11,6 +11,7 @@ use think\facade\Db;
 use think\facade\Request;
 use app\admin\model\Group as GroupModel;
 use app\admin\validate\Group as GroupValidate;
+use function Qiniu\entry;
 
 class Group extends Base
 {
@@ -25,10 +26,15 @@ class Group extends Base
         if (request()->isGet()) {
             // 接收数据
             $data = Request::only(['keywords', 'per_page', 'current_page']);
+            if (empty($data)) {
+                $all = Db::name('group')->field('id,name')->select();
+                result(200, "获取所有数据成功！", $all);
+            }
             //如果当前为超级管理员，则输出全部权限组信息
             if (request()->uid == 1) {
                 //查询所有权限组信息
                 $list = GroupModel::order('create_time', 'desc')
+                    ->whereLike('name|instruction', "%" . $data['keywords'] . "%")
                     ->paginate([
                         'list_rows' => $data['per_page'],
                         'query' => request()->param(),
@@ -46,6 +52,7 @@ class Group extends Base
             } else {
                 // 查询当前管理员正在使用的权限组
                 $list = GroupModel::where('id', request()->uid)
+                    ->whereLike('name|instruction', "%" . $data['keywords'] . "%")
                     ->order('create_time', 'desc')
                     ->paginate([
                         'list_rows' => $data['per_page'],
@@ -176,33 +183,41 @@ class Group extends Base
      */
     public function query()
     {
-        // 接收数据
-        $id = Request::param('id');
-        //查询数据
-        $info = Db::name('group')->where('id', $id)->find();
-        //切割字符串转为数组
-        $info['rules'] = explode(',', $info['rules']);
-        // 删除数组中空元素
-        $info['rules'] = array_filter($info['rules']);
-        //查询一级ID
-        $one = Db::name('menu')->where('pid', 0)->field(['id', 'name'])->select()->toArray();
-        //循环一级数组
-        foreach ($one as $key => $val) {
-            //查询二级ID
-            $two = Db::name('menu')->where('pid', $val['id'])->field(['id', 'name', 'pid'])->select()->toArray();
-            $one[$key]['children'] = $two;
-            //循环二级数组
-            foreach ($one[$key]['children'] as $item => $value) {
-                $three = Db::name('menu')->where('pid', $value['id'])->field(['id', 'name,pid as ppid'])->select()->toArray();
-                //循环将pid赋值给$three
-                for ($i = 0; $i < count($three); $i++) {
-                    $three[$i]['pid'] = $value['pid'];
+        if (request()->isGet()) {
+            // 接收数据
+            $id = Request::param('id');
+            if (!empty($id)) {
+                //查询数据
+                $info = Db::name('group')->where('id', $id)->find();
+                if (!strpos($info['rules'], ',')) {
+                    $info['rules'] = array($info['rules']);
+                } else {
+                    //切割字符串转为数组
+                    $info['rules'] = explode(',', $info['rules']);
+                    // 删除数组中空元素
+                    $info['rules'] = array_filter($info['rules']);
                 }
-                $one[$key]['children'][$item]['children'] = $three;
             }
+            //查询一级ID
+            $one = Db::name('menu')->where('pid', 0)->field(['id', 'name'])->select()->toArray();
+            //循环一级数组
+            foreach ($one as $key => $val) {
+                //查询二级ID
+                $two = Db::name('menu')->where('pid', $val['id'])->field(['id', 'name', 'pid'])->select()->toArray();
+                $one[$key]['children'] = $two;
+                //循环二级数组
+                foreach ($one[$key]['children'] as $item => $value) {
+                    $three = Db::name('menu')->where('pid', $value['id'])->field(['id', 'name,pid as ppid'])->select()->toArray();
+                    //循环将pid赋值给$three
+                    for ($i = 0; $i < count($three); $i++) {
+                        $three[$i]['pid'] = $value['pid'];
+                    }
+                    $one[$key]['children'][$item]['children'] = $three;
+                }
+            }
+            $info['children'] = $one;
+            result(200, "获取数据成功！", $info);
         }
-        $info['children'] = $one;
-        result(200, "获取数据成功！", $info);
     }
 
     /**

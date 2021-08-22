@@ -83,12 +83,10 @@ class User extends Base
             if (!$validate->sceneEdit()->check($data)) {
                 result(403, $validate->getError());
             }
-            // 查询当前管理员的密码
-            $info = Db::name('user')->where('id', $data['id'])->field('user,password')->find();
             // 执行更新
             $user = UserModel::find($data['id']);
             // 判断密码是否已经修改
-            if ($data['password'] !== $info['password']) {
+            if ($data['password'] !== '') {
                 // 重新hash加密
                 $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
             }
@@ -106,10 +104,10 @@ class User extends Base
             }
             $res = $user->save($data);
             if ($res) {
-                $this->log("修改用户{$info['user']}信息成功！");
+                $this->log("修改用户{$user['user']}信息成功！");
                 result(200, "修改成功！");
             } else {
-                $this->log("修改用户{$info['user']}信息失败！");
+                $this->log("修改用户{$user['user']}信息失败！");
                 result(403, "修改失败！");
             }
         }
@@ -175,10 +173,10 @@ class User extends Base
             $user = UserModel::find($data['id']);
             $res = $user->save($data);
             if ($res) {
-                $this->log("修改了用户[id:{$data['id']}]的状态！");
+                $this->log("修改了用户[id：{$data['id']}]的状态！");
                 result(200, "修改成功！");
             } else {
-                $this->log("修改用户[id:{$data['id']}]的状态失败！");
+                $this->log("修改用户[id：{$data['id']}]的状态失败！");
                 result(403, "修改失败！");
             }
         }
@@ -195,7 +193,7 @@ class User extends Base
             $data = Request::only(['keywords', 'per_page', 'current_page']);
             //查询所有用户
             $info = Db::name('user_buylog')
-                ->whereLike('indent|uid', "%" . $data['keywords'] . "%")
+                ->whereLike('indent|uid|product_id', "%" . $data['keywords'] . "%")
                 ->order('create_time', 'desc')
                 ->paginate([
                     'list_rows' => $data['per_page'],

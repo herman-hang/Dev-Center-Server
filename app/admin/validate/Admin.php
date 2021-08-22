@@ -83,6 +83,6 @@ class Admin extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['user', 'name', 'password', 'mobile', 'email', 'age']);
+        return $this->only(['user', 'name', 'password', 'mobile', 'email', 'age'])->remove('password','require');
     }
 }
