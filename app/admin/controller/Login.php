@@ -236,7 +236,7 @@ class Login extends Base
             //获取值失败，无法绑定
             return 0;
         }
-        $admin = Admin::where('id', $id)->find();
+        $admin = Admin::where('id', $id)->field('qq_openid,weixin_openid,weibo_openid,gitee_openid')->find();
         switch ($oauth['type']) {
             case 'qq':
                 //判断QQ登录
@@ -253,10 +253,6 @@ class Login extends Base
             case 'gitee':
                 //判断Gitee登录
                 $admin->save(['gitee_openid' => $oauth['openid']]);
-                break;
-            case 'github':
-                //判断Github登录
-                $admin->save(['github_openid' => $oauth['openid']]);
                 break;
             default:
                 return 0;

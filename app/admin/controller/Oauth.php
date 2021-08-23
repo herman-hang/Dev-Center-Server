@@ -35,27 +35,27 @@ class Oauth extends Base
         //查询所有配置信息
         $info = Db::name('thirdparty')->where('id', 1)->find();
         switch ($type) {
-            case "qq";
+            case "qq":
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/qq";
                 $OAuth = new \Yurun\OAuthLogin\QQ\OAuth2($info['qq_appid'], $info['qq_secret'], $callback);
                 break;
-            case "weixin";
+            case "weixin":
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/weixin";
                 $OAuth = new \Yurun\OAuthLogin\Weixin\OAuth2($info['wx_appid'], $info['wx_secret'], $callback);
                 break;
-            case "sina";
+            case "sina":
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/sina";
                 $OAuth = new \Yurun\OAuthLogin\Weibo\OAuth2($info['weibo_appid'], $info['weibo_secret'], $callback);
                 break;
-            case "gitee";
+            case "gitee":
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/gitee";
                 $OAuth = new \Yurun\OAuthLogin\Gitee\OAuth2($info['gitee_appid'], $info['gitee_secret'], $callback);
                 break;
-            case "github";
+            case "github":
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/github";
                 $OAuth = new \Yurun\OAuthLogin\Github\OAuth2($info['github_appid'], $info['github_secret'], $callback);
@@ -87,7 +87,7 @@ class Oauth extends Base
         //查询所有配置信息
         $info = Db::name('thirdparty')->where('id', 1)->find();
         switch ($type) {
-            case "qq";
+            case "qq":
                 $loginType = "QQ";
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/qq";
@@ -96,14 +96,13 @@ class Oauth extends Base
                 $accessToken = $OAuth->getAccessToken($state);
                 // 用户唯一标识
                 $openid = $OAuth->openid;
-                if (!empty($openid))
-                {
+                if (!empty($openid)) {
                     $admin = Db::name('admin')->where('qq_openid', $openid)->field('id')->find();
-                }else{
+                } else {
                     $admin = null;
                 }
                 break;
-            case "weixin";
+            case "weixin":
                 $loginType = "微信";
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/weixin";
@@ -112,14 +111,13 @@ class Oauth extends Base
                 $accessToken = $OAuth->getAccessToken($state);
                 // 用户唯一标识
                 $openid = $OAuth->openid;
-                if (!empty($openid))
-                {
+                if (!empty($openid)) {
                     $admin = Db::name('admin')->where('weixin_openid', $openid)->field('id')->find();
-                }else{
+                } else {
                     $admin = null;
                 }
                 break;
-            case "sina";
+            case "sina":
                 $loginType = "微博";
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/sina";
@@ -128,42 +126,26 @@ class Oauth extends Base
                 $accessToken = $OAuth->getAccessToken($state);
                 // 用户唯一标识
                 $openid = $OAuth->openid;
-                if (!empty($openid))
-                {
+                if (!empty($openid)) {
                     $admin = Db::name('admin')->where('weibo_openid', $openid)->field('id')->find();
-                }else{
+                } else {
                     $admin = null;
                 }
                 break;
-            case "gitee";
+            case "gitee":
                 $loginType = "Gitee";
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/gitee";
                 $OAuth = new \Yurun\OAuthLogin\Gitee\OAuth2($info['gitee_appid'], $info['gitee_secret'], $callback);
                 // 获取accessToken
                 $accessToken = $OAuth->getAccessToken($state);
+                // 用户信息
+                $userInfo = $OAuth->getUserInfo();
                 // 用户唯一标识
-                $openid = $OAuth->openid;
-                if (!empty($openid))
-                {
+                $openid = $userInfo['id'];
+                if (!empty($openid)) {
                     $admin = Db::name('admin')->where('gitee_openid', $openid)->field('id')->find();
-                }else{
-                    $admin = null;
-                }
-                break;
-            case "github";
-                $loginType = "Github";
-                //定义回调地址
-                $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/github";
-                $OAuth = new \Yurun\OAuthLogin\Github\OAuth2($info['github_appid'], $info['github_secret'], $callback);
-                // 获取accessToken
-                $accessToken = $OAuth->getAccessToken($state);
-                // 用户唯一标识
-                $openid = $OAuth->openid;
-                if (!empty($openid))
-                {
-                    $admin = Db::name('admin')->where('github_openid', $openid)->field('id')->find();
-                }else{
+                } else {
                     $admin = null;
                 }
                 break;
