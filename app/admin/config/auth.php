@@ -10,6 +10,7 @@ return [
         'login/captcha', // 登录验证码
         'login/getCaptcha',//获取验证码
         'login/oauth', // 第三方登录绑定
+        'login/getswitch', // 获取快捷登录开关
         'oauth/login', // 第三方登录
         'oauth/callback', // 第三方登录回调地址
     ],
@@ -18,7 +19,7 @@ return [
         'base/log', //记录管理员登录和操作日志
         'base/upload',//文件上传
         'base/sendEmail',//邮件发送
-        'index/index', // 后台首页
+        'index/home', // 后台首页
         'index/clear', // 清除缓存
         'index/welcome', // 后台我的桌面
         'admin/query', //根据ID查询管理员信息

@@ -21,14 +21,14 @@ class App extends Base
     public function list()
     {
         if (request()->isGet()) {
-            if (request()->isGet()) {
-                // 接收数据
-                $data = Request::only(['keywords', 'per_page', 'current_page', 'type']);
+            // 接收数据
+            $data = Request::only(['keywords', 'per_page', 'current_page', 'type']);
+            if ($data['type'] === "") {
                 // 查询所有升级包信息
                 $info = Db::name('app')
                     ->whereLike('name|author', "%" . $data['keywords'] . "%")
-                    ->where('type', $data['type'])
-                    ->where('status', '2')
+                    ->where('status', 'in', '0,2')
+                    ->withoutField('cause')
                     ->order('create_time', 'desc')
                     ->paginate([
                         'list_rows' => $data['per_page'],
@@ -36,8 +36,22 @@ class App extends Base
                         'var_page' => 'page',
                         'page' => $data['current_page']
                     ]);
-                result(200, "获取数据成功！", $info);
+            } else {
+                // 查询指定类型的应用
+                $info = Db::name('app')
+                    ->whereLike('name|author', "%" . $data['keywords'] . "%")
+                    ->where('type', $data['type'])
+                    ->where('status', '2')
+                    ->withoutField('cause')
+                    ->order('create_time', 'desc')
+                    ->paginate([
+                        'list_rows' => $data['per_page'],
+                        'query' => request()->param(),
+                        'var_page' => 'page',
+                        'page' => $data['current_page']
+                    ]);
             }
+            result(200, "获取数据成功！", $info);
         }
     }
 
@@ -49,7 +63,7 @@ class App extends Base
     {
         if (request()) {
             // 接收数据
-            $data = Request::param();
+            $data = Request::except(['download', 'cause']);
             // 验证数据
             $validate = new AppValidate();
             if (!$validate->sceneAdd()->check($data)) {
@@ -59,7 +73,7 @@ class App extends Base
             $res = AppModel::create($data);
             if ($res) {
                 $this->log("发布了应用{$data['name']}");
-                result(200, "发布成功！");
+                result(201, "发布成功！");
             } else {
                 $this->log("发布应用{$data['name']}失败！");
                 result(403, "发布失败！");
@@ -77,7 +91,7 @@ class App extends Base
     {
         if (request()->isPut()) {
             // 接收数据
-            $data = Request::except(['status', 'create_time', 'update_time']);
+            $data = Request::except(['status', 'create_time', 'update_time', 'download', 'cause']);
             // 验证数据
             $validate = new AppValidate();
             if (!$validate->sceneEdit()->check($data)) {
@@ -173,14 +187,13 @@ class App extends Base
     public function auditList()
     {
         if (request()->isGet()) {
-            if (request()->isGet()) {
-                // 接收数据
-                $data = Request::only(['keywords', 'per_page', 'current_page', 'type']);
+            // 接收数据
+            $data = Request::only(['keywords', 'per_page', 'current_page', 'type']);
+            if ($data['type'] === "") {
                 // 查询所有升级包信息
                 $info = Db::name('app')
                     ->whereLike('name|author', "%" . $data['keywords'] . "%")
-                    ->where('type', $data['type'])
-                    ->where('status', 'in', '0,1,3')
+                    ->where('status', 'in', '1,3')
                     ->order('create_time', 'desc')
                     ->paginate([
                         'list_rows' => $data['per_page'],
@@ -188,8 +201,21 @@ class App extends Base
                         'var_page' => 'page',
                         'page' => $data['current_page']
                     ]);
-                result(200, "获取数据成功！", $info);
+            } else {
+                // 查询所有升级包信息
+                $info = Db::name('app')
+                    ->whereLike('name|author', "%" . $data['keywords'] . "%")
+                    ->where('type', $data['type'])
+                    ->where('status', 'in', '1,3')
+                    ->order('create_time', 'desc')
+                    ->paginate([
+                        'list_rows' => $data['per_page'],
+                        'query' => request()->param(),
+                        'var_page' => 'page',
+                        'page' => $data['current_page']
+                    ]);
             }
+            result(200, "获取数据成功！", $info);
         }
     }
 
@@ -221,7 +247,9 @@ class App extends Base
                 //查询用户名邮箱
                 $user = Db::name('user')->where('id', $info['user_id'])->field('email,user')->find();
                 // 发送通知邮件
-                $this->sendEmail($user['email'], $title, $content, $user['user']);
+                if (!empty($user['email'])) {
+                    $this->sendEmail($user['email'], $title, $content, $user['user']);
+                }
                 $this->log("已审核通过应用[ID：{$id}]");
                 result(200, "已通过！");
             } else {
@@ -262,7 +290,9 @@ class App extends Base
                 //查询用户名邮箱
                 $user = Db::name('user')->where('id', $info['user_id'])->field('email,user')->find();
                 // 发送通知邮件
-                $this->sendEmail($user['email'], $title, $content, $user['user']);
+                if (!empty($user['email'])) {
+                    $this->sendEmail($user['email'], $title, $content, $user['user']);
+                }
                 $this->log("已驳回应用[ID：{$data['id']}]审核请求！");
                 result(200, "驳回成功！");
             } else {

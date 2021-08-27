@@ -8,6 +8,7 @@ declare (strict_types=1);
 namespace app\admin\controller;
 
 use think\facade\Cache;
+use think\facade\Db;
 use think\facade\Request;
 use app\admin\validate\Login as LoginValidate;
 use app\admin\model\Admin;
@@ -17,6 +18,12 @@ use edward\captcha\facade\CaptchaApi;
 
 class Login extends Base
 {
+    /**
+     * 后台登录
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function login()
     {
         if (request()->isPost()) {
@@ -258,5 +265,19 @@ class Login extends Base
                 return 0;
         }
         return 1;
+    }
+
+    /**
+     * 快捷登录开关获取
+     */
+    public function getSwitch()
+    {
+        //查询所有开关信息
+        $info = Db::name('switch')->where('id', 1)->field('qqlogin_switch,weixinlogin_switch,sinalogin_switch,giteelogin_switch')->find();
+        // 转为布尔值
+        foreach ($info as $key => $val){
+            $info[$key] = (bool)$val;
+        }
+        result(200, "获取开关信息成功！", $info);
     }
 }

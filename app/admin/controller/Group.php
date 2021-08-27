@@ -84,7 +84,7 @@ class Group extends Base
             $data = Request::only(['name', 'instruction', 'status', 'rules']);
             // 验证数据
             $validate = new GroupValidate();
-            if (!$validate->check($data)) {
+            if (!$validate->sceneAdd()->check($data)) {
                 result(403, $validate->getError());
             }
             // 执行添加
@@ -114,7 +114,7 @@ class Group extends Base
             $data = Request::only(['id', 'name', 'instruction', 'rules']);
             // 验证数据
             $validate = new GroupValidate();
-            if (!$validate->check($data)) {
+            if (!$validate->sceneEdit()->check($data)) {
                 result(403, $validate->getError());
             }
             // 执行更新

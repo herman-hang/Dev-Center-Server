@@ -55,7 +55,7 @@ class Authorization extends Base
             $res = AuthorizationModel::create($data);
             if ($res) {
                 $this->log("添加了授权站点{$data['name']}");
-                result(200, "添加成功！");
+                result(201, "添加成功！");
             } else {
                 $this->log("添加授权站点{$data['name']}失败！");
                 result(403, "添加失败！");

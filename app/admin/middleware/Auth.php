@@ -51,15 +51,19 @@ class Auth
                 //获取token的有效时间
                 $expTime = $token['exp']->getValue();
                 //如果JWT的有效时间小于15分钟则刷新token并返回给客户端
-                /*if ($expTime - time() < 900) {
+                if ($expTime - time() < 900) {
                     //刷新token，会将旧token加入黑名单
                     $newToken = JWTAuth::refresh();
+                    header('Access-Control-Expose-Headers:Authorization');
                     header('Authorization:bearer ' . $newToken);
-                }*/
+                }
                 //向控制器传当前管理员的ID
                 $request->uid = $token['uid']->getValue();
             } catch (JWTException $e) {
-                result(-1, $e->getMessage());
+                // 状态码-1为token在黑名单宽限期列表中，这是应该继续放行
+                if ($e->getCode() !== -1) {
+                    result(0, "登录超时！");
+                }
             }
         }
         return $next($request);

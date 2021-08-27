@@ -28,6 +28,11 @@ class Oauth extends Base
         if ($type == null) {
             result(400, '参数错误');
         }
+        // 查询开关
+        $switch = Db::name('switch')->where('id', 1)->find();
+        if ($switch[$type . 'login_switch'] === '0') {
+            result(403, "该快捷登录已关闭！");
+        }
         //获取入口地址
         foreach (Config::get('app.app_map') as $key => $value) {
             $entry[] = $key;
@@ -54,11 +59,6 @@ class Oauth extends Base
                 //定义回调地址
                 $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/gitee";
                 $OAuth = new \Yurun\OAuthLogin\Gitee\OAuth2($info['gitee_appid'], $info['gitee_secret'], $callback);
-                break;
-            case "github":
-                //定义回调地址
-                $callback = Request::domain() . "/" . $entry[0] . "/oauth/callback/type/github";
-                $OAuth = new \Yurun\OAuthLogin\Github\OAuth2($info['github_appid'], $info['github_secret'], $callback);
                 break;
             default:
                 result(400, '非法请求！');
@@ -153,6 +153,7 @@ class Oauth extends Base
                 result(400, '非法请求！');
         }
         if (!empty($accessToken)) {
+            $system = Db::name('system')->where('id', 1)->field('access')->find();
             //判断是否已经是管理员
             if (!empty($admin)) {
                 //参数为用户认证的信息，请自行添加
@@ -161,13 +162,13 @@ class Oauth extends Base
                 Db::name('admin')->where('id', $admin['id'])->Inc('login_sum');
                 //记录日志
                 $this->log("使用{$loginType}快捷登录成功！", 1, $admin['id']);
-                return view('loading', ['token' => 'bearer ' . $token, 'domain' => 'http://localhost:8080/login']);
+                return view('loading', ['token' => 'bearer ' . $token, 'domain' => Request::domain() . '/' . $system['access'] . '/login']);
             } else {
                 //设置openid的缓存,方便登录成功后进行绑定
                 $oauth['type'] = $type;
                 $oauth['openid'] = $openid;
                 Cache::set('oauth_' . Request::ip(), $oauth, 600);
-                return view('loading', ['token' => '', 'domain' => 'http://localhost:8080/login']);
+                return view('loading', ['token' => '', 'domain' => Request::domain() . '/' . $system['access'] . '/login']);
             }
         } else {
             result(500, '获取第三方用户信息失败！');

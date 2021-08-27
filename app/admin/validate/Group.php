@@ -19,7 +19,8 @@ class Group extends Validate
      */
     protected $rule = [
         'name' => 'require',
-        'rules' => 'require'
+        'rules' => 'require',
+        'status' => 'require'
     ];
 
     /**
@@ -30,6 +31,21 @@ class Group extends Validate
      */
     protected $message = [
         'name.require' => '权限组名称不能为空！',
-        'rules.require' => '选择权限不能为空！',
+        'rules.require' => '请选择权限！',
+        'status.require' => '请选中状态！'
     ];
+
+    /**
+     * 权限组添加
+     * @return Group
+     */
+    public function sceneAdd()
+    {
+        return $this->only(['name', 'rules']);
+    }
+
+    public function sceneEdit()
+    {
+        return $this->only(['status']);
+    }
 }

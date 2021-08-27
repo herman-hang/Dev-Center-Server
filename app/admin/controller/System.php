@@ -21,7 +21,7 @@ class System extends Base
     public function system()
     {
         //当前系统信息
-        $system = Db::name('system')->where('id', 1)->find();
+        $system = Db::name('system')->where('id', 1)->withoutField('id,ip,max_logerror,file_storage,images_storage,access,version')->find();
         result(200, "获取系统设置信息成功！", $system);
     }
 
@@ -32,11 +32,11 @@ class System extends Base
     public function systemEdit()
     {
         //接收所有提交数值
-        $data = Request::except(['file_storage', 'max_logerror', 'ip']);
+        $data = Request::except(['id','file_storage', 'max_logerror', 'ip', 'images_storage', 'access', 'version']);
         //实例化
         $validate = new SystemValidate;
         //验证数据
-        if (!$validate->check($data)) {
+        if (!$validate->sceneSystemEdit()->check($data)) {
             result(403, $validate->getError());
         }
         //执行更新操作
@@ -57,7 +57,7 @@ class System extends Base
     public function security()
     {
         //当前的信息
-        $info = Db::name('system')->where('id', 1)->field('file_storage,max_logerror,ip')->find();
+        $info = Db::name('system')->where('id', 1)->field('file_storage,max_logerror,ip,images_storage,access')->find();
         result(200, "获取安全配置信息成功！", $info);
     }
 
@@ -68,10 +68,30 @@ class System extends Base
     public function securityEdit()
     {
         //接收数值
-        $data = Request::only(['file_storage', 'max_logerror', 'ip']);
-        // 判断该参数是否为数字或者是数字字符串
-        if (!is_numeric($data['max_logerror'])) {
-            result(403, "允许登录错误次数只能是数字！");
+        $data = Request::only(['file_storage', 'max_logerror', 'ip', 'images_storage', 'access']);
+        // 数据验证
+        $validate = new SystemValidate;
+        //验证数据
+        if (!$validate->sceneSecurityEdit()->check($data)) {
+            result(403, $validate->getError());
+        }
+        // 修改后台地址
+        $info = Db::name('system')->where('id', 1)->field('access')->find();
+        if ($data['access'] !== $info['access']) {
+            //旧文件目录
+            $oldDir = iconv('utf-8', 'gb2312', $_SERVER['DOCUMENT_ROOT'] . '/' . $info['access']);
+            //新目录
+            $newDir = iconv('utf-8', 'gb2312', $_SERVER['DOCUMENT_ROOT'] . '/' . $data['access']);
+            // 旧目录存在并且新目录不存在
+            if (is_dir($oldDir)) {
+                if (!file_exists($newDir)) {
+                    if (!rename($oldDir, $newDir)) {
+                        result(403, "修改后台入口失败！");
+                    }
+                } else {
+                    result(403, "新后台入口非法，请更换其他入口尝试一下！");
+                }
+            }
         }
         // 执行更新
         $res = Db::name('system')->where('id', 1)->update($data);

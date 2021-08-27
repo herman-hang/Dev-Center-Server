@@ -10,6 +10,7 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\Request;
 use app\admin\model\User as UserModel;
+
 class Developer extends Base
 {
     /**
@@ -22,8 +23,8 @@ class Developer extends Base
             // 接收数据
             $data = Request::only(['keywords', 'per_page', 'current_page']);
             //查询所有开发者
-            $info = Db::view('user', 'id,user,nickname,mobile,email,qq')
-                ->view('user_developer', 'id,level', 'user_developer.user_id=user.id')
+            $info = Db::view('user', 'id,user,nickname,mobile,email,qq,money')
+                ->view('user_developer', 'id,level,brokerage', 'user_developer.user_id=user.id')
                 ->whereLike('nickname|user|mobile|email', "%" . $data['keywords'] . "%")
                 ->where('is_developer', '2')
                 ->order('create_time', 'desc')
@@ -45,7 +46,10 @@ class Developer extends Base
     {
         if (request()->isPut()) {
             // 接收数据
-            $data = Request::except(['user_id']);
+            $data = Request::except(['user_id', 'user']);
+            if (!is_numeric($data['brokerage'])) {
+                result(403, "服务费只能是数字！");
+            }
             // 更新数据
             $res = Db::name('user_developer')->where('id', $data['id'])->update($data);
             if ($res) {
@@ -68,7 +72,10 @@ class Developer extends Base
     {
         $id = Request::param('id');
         // 查询当前开发者的信息
-        $info = Db::name('user_developer')->where('id', $id)->withoutField('user_id,brokerage')->find();
+        $info = Db::view('user', 'id,user')
+            ->view('user_developer', '*', 'user_developer.user_id=user.id')
+            ->where('user_developer.id', $id)
+            ->find();
         result(200, "获取数据成功！", $info);
     }
 
@@ -133,7 +140,7 @@ class Developer extends Base
             // 接收用户ID
             $id = Request::param('id');
             // 成为开发者
-            $result = Db::name('user')->where('id', $id)->update(['is_developer' => '2','cause'=>NULL]);
+            $result = Db::name('user')->where('id', $id)->update(['is_developer' => '2', 'cause' => NULL]);
             // 判断开发者数据表是否存在该用户的信息
             if ($result) {
                 $developer = Db::name('user_developer')->where('user_id', $id)->find();
@@ -152,7 +159,9 @@ class Developer extends Base
                 // 邮件内容
                 $content = "<h3>打造生态，我们与您同在！</h3>您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经审核通过，恭喜您成为我们开发团队的一员！";
                 // 发送通知邮件
-                $this->sendEmail($info['email'], $title, $content, $info['user']);
+                if (!empty($info['email'])){
+                    $this->sendEmail($info['email'], $title, $content, $info['user']);
+                }
                 $this->log("用户[ID：{$id}]已成为开发者！");
                 result(200, "已通过！");
             } else {
@@ -181,7 +190,9 @@ class Developer extends Base
                 // 邮件内容
                 $content = "抱歉！您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经被我们拒绝，请登录{$system['name']}按驳回原因修改后再次提交申请审核！";
                 // 发送通知邮件
-                $this->sendEmail($info['email'], $title, $content, $info['user']);
+                if (!empty($info['email'])){
+                    $this->sendEmail($info['email'], $title, $content, $info['user']);
+                }
                 $this->log("已驳回用户[ID：{$data['id']}]成为开发者请求！");
                 result(200, "驳回成功！");
             } else {

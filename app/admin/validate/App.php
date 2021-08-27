@@ -25,8 +25,7 @@ class App extends Validate
         'introduce' => 'require',
         'status' => 'require',
         'zip' => 'require',
-        'auth_id' => 'require',
-        'type'=>'require'
+        'type' => 'require'
     ];
 
     /**
@@ -43,7 +42,6 @@ class App extends Validate
         'introduce.require' => '介绍说明不能为空！',
         'status.require' => '请选择状态！',
         'zip.require' => '下载地址不能为空！',
-        'auth_id.require' => '请选择您要绑定站点！',
         'type.require' => '应用类型不能为空！'
     ];
 
@@ -53,7 +51,7 @@ class App extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['name', 'img', 'is_pay', 'author', 'introduce', 'status', 'zip', 'auth_id','type']);
+        return $this->only(['name', 'img', 'is_pay', 'author', 'introduce', 'status', 'zip', 'type']);
     }
 
     /**
@@ -62,6 +60,6 @@ class App extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['name', 'img', 'is_pay', 'author', 'introduce', 'zip', 'auth_id','type']);
+        return $this->only(['name', 'img', 'is_pay', 'author', 'introduce', 'zip', 'type']);
     }
 }

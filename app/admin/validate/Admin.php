@@ -23,6 +23,7 @@ class Admin extends Validate
         'mpassword' => 'require|length:6,15',
         'password' => 'require|length:6,15',
         'passwords' => 'require|confirm:password',
+        'card' => 'idCard',
         'mobile' => 'mobile|unique:admin,mobile',
         'email' => 'email|unique:admin,email',
         'age' => 'number|between:1,120',
@@ -48,6 +49,7 @@ class Admin extends Validate
         'password.length' => '密码只能在6到15位之间！',
         'passwords.require' => '确认密码不能为空！',
         'passwords.confirm' => '两次密码不一致！',
+        'card.idCard' => '身份证号码格式错误！',
         'mobile.mobile' => '手机号码格式不正确！',
         'mobile.unique' => '手机号码已存在！',
         'email.email' => '邮箱格式不正确！',
@@ -74,7 +76,7 @@ class Admin extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['user', 'name', 'password', 'passwords', 'mobile', 'email', 'age', 'status', 'role_id']);
+        return $this->only(['user', 'name', 'password', 'passwords', 'card', 'mobile', 'email', 'age', 'status', 'role_id']);
     }
 
     /**
@@ -83,6 +85,6 @@ class Admin extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['user', 'name', 'password', 'mobile', 'email', 'age'])->remove('password','require');
+        return $this->only(['user', 'name', 'password', 'card', 'mobile', 'email', 'age'])->remove('password', 'require');
     }
 }

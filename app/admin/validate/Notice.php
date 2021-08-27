@@ -21,7 +21,7 @@ class Notice extends Validate
         'title' => 'require|length:0,64',
         'status' => 'require',
         'content'=>'require',
-        'inscribe'=>'require'
+        'inscribe'=>'require|length:0,50'
     ];
 
     /**
@@ -36,6 +36,7 @@ class Notice extends Validate
         'status.require' => '请选择状态！',
         'content.require' => '内容不能为空！',
         'inscribe.require' => '落款不能为空！',
+        'inscribe.length' => '落款只能在0到50个字符之间！',
     ];
 
     /**
@@ -44,7 +45,7 @@ class Notice extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['title','content','inscribe']);
+        return $this->only(['title','content','inscribe','status']);
     }
 
     /**

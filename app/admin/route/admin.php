@@ -16,6 +16,8 @@ Route::rule('clear', 'Index/clear', 'POST');
 Route::rule('login', 'Login/login', 'POST');
 // 获取图片验证码
 Route::rule('captcha', 'Login/getCaptcha', 'GET');
+// 获取快捷登录开关
+Route::rule('getswitch', 'Login/getSwitch', 'GET');
 
 /**
  * 系统管理相关路由
@@ -130,4 +132,12 @@ Route::group('app',function (){
 Route::group('authorization',function (){
     // 根据ID获取管理员数据
     Route::rule('query/:id','authorization/query',"GET");
+});
+
+/**
+ * 提现列表相关路由
+ */
+Route::group('withdraw',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','withdraw/query',"GET");
 });

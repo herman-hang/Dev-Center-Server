@@ -26,7 +26,7 @@ class User extends Base
             //查询所有用户
             $info = Db::name('user')
                 ->whereLike('nickname|user|mobile|email', "%" . $data['keywords'] . "%")
-                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid'])
+                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid', 'money', 'cause'])
                 ->where('is_developer', '0')
                 ->order('create_time', 'desc')
                 ->paginate([
@@ -47,7 +47,7 @@ class User extends Base
     {
         if (request()->isPost()) {
             // 接收数据
-            $data = Request::except(['create_time', 'update_time', 'wx_openid', 'qq_openid', 'weibo_openid']);
+            $data = Request::except(['create_time', 'update_time', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause']);
             // 验证数据
             $validate = new UserValidate();
             if (!$validate->sceneAdd()->check($data)) {
@@ -58,7 +58,13 @@ class User extends Base
             // 执行添加
             $res = UserModel::create($data);
             if ($res) {
-                $this->log("添加用户{$data['user']}成功！");
+                // 如果是开发者，则在开发者数据表添加一条数据
+                if ($data['is_developer'] == '2') {
+                    Db::name('user_developer')->insert(['user_id' => $res->id, 'level' => '0']);
+                    $this->log("添加开发者{$data['user']}成功！");
+                } else {
+                    $this->log("添加用户{$data['user']}成功！");
+                }
                 result(201, "添加成功！");
             } else {
                 $this->log("添加用户{$data['user']}失败！");
@@ -77,7 +83,7 @@ class User extends Base
     {
         if (request()->isPut()) {
             // 接收数据
-            $data = Request::except(['create_time', 'update_time', 'status', 'wx_openid', 'qq_openid', 'weibo_openid']);
+            $data = Request::except(['create_time', 'update_time', 'status', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause']);
             // 验证数据
             $validate = new UserValidate();
             if (!$validate->sceneEdit()->check($data)) {

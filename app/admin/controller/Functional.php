@@ -10,6 +10,7 @@ namespace app\admin\controller;
 use think\api\Client;
 use think\facade\Db;
 use think\facade\Request;
+use app\admin\validate\Functional as FunctionalValidate;
 
 class Functional extends Base
 {
@@ -22,7 +23,7 @@ class Functional extends Base
     public function pay()
     {
         //查询所有支付配置信息
-        $info = Db::name('pay')->where('id', 1)->find();
+        $info = Db::name('pay')->where('id', 1)->withoutField('id')->find();
         result(200, "获取数据成功！", $info);
     }
 
@@ -32,7 +33,12 @@ class Functional extends Base
      */
     public function payEdit()
     {
-        $data = Request::param();
+        $data = Request::except(['id']);
+        // 验证数据
+        $validate = new FunctionalValidate();
+        if (!$validate->scenePayEdit()->check($data)) {
+            result(403, $validate->getError());
+        }
         //当存在数据时执行更新数据
         $res = Db::name('pay')->where('id', 1)->update($data);
         //判断返回的值是否为true
@@ -54,7 +60,7 @@ class Functional extends Base
     public function sms()
     {
         //查询短信配置信息
-        $info = Db::name('sms')->where('id', 1)->find();
+        $info = Db::name('sms')->where('id', 1)->withoutField('id')->find();
         result(200, "获取数据成功！", $info);
     }
 
@@ -67,7 +73,12 @@ class Functional extends Base
     public function smsEdit()
     {
         // 接收数据
-        $data = Request::param();
+        $data = Request::except(['phone', 'id']);
+        // 验证数据
+        $validate = new FunctionalValidate();
+        if (!$validate->sceneSmsEdit()->check($data)) {
+            result(403, $validate->getError());
+        }
         //查询短信宝密码
         $info = Db::name('sms')->where('id', 1)->field('smsbao_pass,app_code')->find();
         //对密码进行MD5算法加密
@@ -78,7 +89,7 @@ class Functional extends Base
             $data['app_code'] = md5($data['app_code']);
         }
         //当存在数据时执行更新数据
-        $res = Db::name('sms')->strict(false)->where('id', 1)->update($data);
+        $res = Db::name('sms')->where('id', 1)->update($data);
         if ($res) {
             $this->log("修改了短信配置信息！");
             result(200, "修改成功！");
@@ -136,7 +147,7 @@ class Functional extends Base
             $this->log("测试发送短信！");
             result(200, "发送成功！");
         } else {
-            $this->log("测试发送短信！");
+            $this->log("测试发送短信失败！");
             result(403, "发送失败！");
         }
     }
@@ -150,7 +161,7 @@ class Functional extends Base
     public function email()
     {
         //查询邮件配置信息
-        $info = Db::name('email')->where('id', 1)->find();
+        $info = Db::name('email')->where('id', 1)->withoutField('id')->find();
         result(200, "获取数据成功！", $info);
     }
 
@@ -161,15 +172,15 @@ class Functional extends Base
     public function emailEdit()
     {
         // 接收数据
-        $data = Request::param();
-        $res = Db::name('email')->strict(false)->where('id', 1)->update($data);
+        $data = Request::except(['test_email', 'id']);
+        $res = Db::name('email')->where('id', 1)->update($data);
         //判断返回的值是否为true
         if ($res) {
             $this->log("修改了邮件配置信息！");
             result(200, "修改成功！");
         } else {
             $this->log("修改邮件配置信息失败！");
-            result(200, "修改失败！");
+            result(403, "修改失败！");
         }
     }
 
@@ -191,7 +202,7 @@ class Functional extends Base
             $this->log("测试发送邮件！");
             result(200, "发送成功！");
         } else {
-            $this->log("测试发送邮件！");
+            $this->log("测试发送邮件失败！");
             result(403, "发送失败！");
         }
     }
@@ -205,7 +216,7 @@ class Functional extends Base
     public function thirdparty()
     {
         //查询第三方登录配置信息
-        $info = Db::name('thirdparty')->where('id', 1)->find();
+        $info = Db::name('thirdparty')->where('id', 1)->withoutField('id')->find();
         result(200, "获取数据成功！", $info);
     }
 
@@ -216,13 +227,15 @@ class Functional extends Base
     public function thirdpartyEdit()
     {
         //接收前台传过来的值
-        $data = Request::except(['qq_callback','wx_callback','weibo_callback','gitee_callback','github_callback']);
+        $data = Request::except(['qq_callback', 'wx_callback', 'weibo_callback', 'gitee_callback', 'id']);
         //执行更新操作
         $res = Db::name('thirdparty')->where('id', 1)->update($data);
         //判断是否操作成功，true为操作成功
         if ($res) {
+            $this->log("修改了快捷登录信息！");
             result(200, "修改成功！");
         } else {
+            $this->log("修改快捷登录信息失败！");
             result(403, "修改失败！");
         }
     }
