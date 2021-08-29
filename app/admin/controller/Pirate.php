@@ -36,7 +36,13 @@ class Pirate extends Base
         }
     }
 
-    public function go()
+    /**
+     * 获取账号密码
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getInfo()
     {
         if (request()->isPost()) {
             // 接收ID
@@ -47,7 +53,21 @@ class Pirate extends Base
             $http = new HttpRequest();
             $url = "http://layui.muyucms.com/muyu.php/base/go";
             $response = $http->ua('YurunHttp')->post($url, ['key' => '123456'])->json();
-            result(200,"获取数据成功！",$response);
+            result(200, "获取数据成功！", $response);
         }
+    }
+
+    /**
+     * 备份代码
+     */
+    public function backups()
+    {
+    }
+
+    /**
+     * 执行删除
+     */
+    public function executeDelete()
+    {
     }
 }

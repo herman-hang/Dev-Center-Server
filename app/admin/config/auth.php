@@ -23,6 +23,7 @@ return [
         'index/clear', // 清除缓存
         'index/welcome', // 后台我的桌面
         'index/loginOut', // 退出登录
+        'index/developerSort', // 开发者排序
         'admin/query', //根据ID查询管理员信息
         'group/query', //根据ID查询权限信息
         'user/query',//根据ID查询用户信息
