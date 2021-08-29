@@ -71,9 +71,9 @@ class Authorization extends Base
      */
     public function edit()
     {
-        if (request()->isPut()){
+        if (request()->isPut()) {
             // 接收数据
-            $data = Request::except(['create_time','update_time','status']);
+            $data = Request::except(['create_time', 'update_time', 'status']);
             // 验证数据
             // 验证数据
             $validate = new AuthorizationValidate();
@@ -83,12 +83,12 @@ class Authorization extends Base
             // 执行更新操作
             $authorization = AuthorizationModel::find($data['id']);
             $res = $authorization->save($data);
-            if ($res){
+            if ($res) {
                 $this->log("修改了授权站点{$data['name']}");
-                result(200,"修改成功！");
-            }else{
+                result(200, "修改成功！");
+            } else {
                 $this->log("修改授权站点{$data['name']}失败！");
-                result(403,"修改失败！");
+                result(403, "修改失败！");
             }
         }
     }
@@ -131,7 +131,7 @@ class Authorization extends Base
      */
     public function query()
     {
-        if (request()->isGet()){
+        if (request()->isGet()) {
             // 接收授权站点ID
             $id = Request::param('id');
             // 查询用户信息
@@ -148,7 +148,7 @@ class Authorization extends Base
      */
     public function statusEdit()
     {
-        if (request()->isPut()){
+        if (request()->isPut()) {
             // 接收ID
             $data = Request::only(['id', 'status']);
             // 执行更新
@@ -159,6 +159,41 @@ class Authorization extends Base
                 result(200, "修改成功！");
             } else {
                 $this->log("修改授权站点[id:{$data['id']}]的状态失败！");
+                result(403, "修改失败！");
+            }
+        }
+    }
+
+    /**
+     * 授权配置
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function authConfig()
+    {
+        if (request()->isGet()) {
+            $info = Db::name('authorization_config')->where('id', 1)->find();
+            result(200, "数据获取成功！", $info);
+        }
+    }
+
+    /**
+     * 编辑授权配置信息
+     * @throws \think\db\exception\DbException
+     */
+    public function authConfigEdit()
+    {
+        if (request()->isPost()) {
+            // 接收数据
+            $data = Request::param();
+            // 更新
+            $res = Db::name('authorization_config')->where('id', 1)->update($data);
+            if ($res) {
+                $this->log("修改了授权配置信息！");
+                result(200, "修改成功！");
+            } else {
+                $this->log("修改授权配置信息失败！");
                 result(403, "修改失败！");
             }
         }

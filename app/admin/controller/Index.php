@@ -53,7 +53,26 @@ class Index extends Base
 
     public function welcome()
     {
-        echo 'Welcome';
+        if (request()->isGet()) {
+            // 我的状态
+            $admin = Db::name('admin')->where('id', request()->uid)->field('user,role_id,lastlog_time,lastlog_ip,login_sum')->find();
+            $group = Db::name('group')->where('id', $admin['role_id'])->field('name')->find();
+            $data['status'] = [
+                ['key' => '当前登录者', 'value' => $admin['user']],
+                ['key' => '所属权限组', 'value' => $group['name']],
+                ['key' => '上次登录IP', 'value' => $admin['lastlog_ip']],
+                ['key' => '上次登录时间', 'value' => $admin['lastlog_time']],
+                ['key' => '登录总次数', 'value' => $admin['login_sum']]
+            ];
+            result(200, "获取数据成功！", $data);
+        }
+    }
+
+    /**
+     * 报表数据
+     */
+    public function echart()
+    {
     }
 
     /**
@@ -61,12 +80,33 @@ class Index extends Base
      */
     public function clear()
     {
-        if (request()->isPost()){
+        if (request()->isPost()) {
             // 删除运行目录
-            if (delete_dir_file(root_path() . 'runtime')){
-                result(200,"清除成功！");
-            }else{
-                result(200,"清除成功！");
+            if (delete_dir_file(root_path() . 'runtime')) {
+                result(200, "清除成功！");
+            } else {
+                result(200, "清除成功！");
+            }
+        }
+    }
+
+    /**
+     * 退出登录
+     * @throws \think\db\exception\DbException
+     */
+    public function loginOut()
+    {
+        if (request()->isPost()) {
+            // 获取当前客户端IP地址
+            $ip = Request::ip();
+            // 更新
+            $res = Db::name('admin')->where('id', request()->uid)->update(['lastlog_time' => time(), 'lastlog_ip' => $ip]);
+            if ($res) {
+                $this->log("退出登录成功！", 1);
+                result(200, "退出成功！");
+            } else {
+                $this->log("退出登录失败！", 1);
+                result(403, "退出失败！");
             }
         }
     }

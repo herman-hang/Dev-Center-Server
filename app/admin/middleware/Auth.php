@@ -7,9 +7,11 @@ declare (strict_types=1);
 
 namespace app\admin\middleware;
 
+use app\admin\model\AdminLog;
 use thans\jwt\exception\JWTException;
 use thans\jwt\facade\JWTAuth;
 use think\facade\Config;
+use think\facade\Db;
 use think\facade\Request;
 
 class Auth
@@ -62,6 +64,15 @@ class Auth
             } catch (JWTException $e) {
                 // 状态码-1为token在黑名单宽限期列表中，这是应该继续放行
                 if ($e->getCode() !== -1) {
+                    //实例化对象
+                    $log = new AdminLog();
+                    // 记录退出的时间和IP地址
+                    $expToken = JWTAuth::auth(false);
+                    $id = $expToken['uid']->getValue();
+                    $ip = Request::ip();
+                    Db::name('admin')->where('id', $id)->update(['lastlog_time' => time(), 'lastlog_ip' => $ip]);
+                    // 日志记录
+                    $log->save(['type' => 1, 'admin_id' => $id, 'content' => "登录超时！", 'ip' => $ip]);
                     result(0, "登录超时！");
                 }
             }

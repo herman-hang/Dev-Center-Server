@@ -10,6 +10,7 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\Request;
 use app\admin\model\User as UserModel;
+use app\admin\validate\Developer as DeveloperValidate;
 
 class Developer extends Base
 {
@@ -47,8 +48,9 @@ class Developer extends Base
         if (request()->isPut()) {
             // 接收数据
             $data = Request::except(['user_id', 'user']);
-            if (!is_numeric($data['brokerage'])) {
-                result(403, "服务费只能是数字！");
+            $validate = new DeveloperValidate();
+            if (!$validate->sceneEdit()->check($data)) {
+                result(403, $validate->getError());
             }
             // 更新数据
             $res = Db::name('user_developer')->where('id', $data['id'])->update($data);
@@ -88,7 +90,7 @@ class Developer extends Base
     public function demote()
     {
         if (request()->isPut()) {
-            // 获取开发者ID
+            // 接收开发者ID
             $id = Request::param('id');
             // 更新
             $info = Db::name('user_developer')->where('id', $id)->field('user_id')->find();
@@ -115,7 +117,7 @@ class Developer extends Base
             //查询所有开发者
             $info = Db::name('user')
                 ->whereLike('nickname|user|mobile|email', "%" . $data['keywords'] . "%")
-                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid'])
+                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid','status'])
                 ->where('is_developer', 'in', '1,3')
                 ->order('create_time', 'desc')
                 ->paginate([
@@ -159,7 +161,7 @@ class Developer extends Base
                 // 邮件内容
                 $content = "<h3>打造生态，我们与您同在！</h3>您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经审核通过，恭喜您成为我们开发团队的一员！";
                 // 发送通知邮件
-                if (!empty($info['email'])){
+                if (!empty($info['email'])) {
                     $this->sendEmail($info['email'], $title, $content, $info['user']);
                 }
                 $this->log("用户[ID：{$id}]已成为开发者！");
@@ -190,7 +192,7 @@ class Developer extends Base
                 // 邮件内容
                 $content = "抱歉！您在 <strong>{$system['name']}</strong> {$info['create_time']}申请成为开发者的请求已经被我们拒绝，请登录{$system['name']}按驳回原因修改后再次提交申请审核！";
                 // 发送通知邮件
-                if (!empty($info['email'])){
+                if (!empty($info['email'])) {
                     $this->sendEmail($info['email'], $title, $content, $info['user']);
                 }
                 $this->log("已驳回用户[ID：{$data['id']}]成为开发者请求！");

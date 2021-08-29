@@ -125,7 +125,7 @@ class Withdraw extends Base
         // 接收订单ID
         $id = Request::param('id');
         $info = Db::view('developer_withdraw', 'id,developer_id,user_id,money as apply_money,create_time,indent,withdraw_account,status')
-            ->view('user_developer', '*', 'developer_withdraw.developer_id=user_developer.id')
+            ->view('user_developer', 'alipay,alipay_name,wxpay,wxpay_name,qqpay,qqpay_name,user_id,level,brokerage', 'developer_withdraw.developer_id=user_developer.id')
             ->view('user', 'user,name,mobile,email,qq,money', 'developer_withdraw.user_id=user.id')
             ->where('developer_withdraw.id', $id)
             ->find();

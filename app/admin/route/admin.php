@@ -12,6 +12,8 @@ Route::rule('home', 'Index/home', 'GET');
 Route::rule('welcome', 'Index/welcome', 'GET');
 // 清除缓存
 Route::rule('clear', 'Index/clear', 'POST');
+// 退出登录
+Route::rule('loginOut', 'Index/loginOut', 'POST');
 // 登录页
 Route::rule('login', 'Login/login', 'POST');
 // 获取图片验证码
