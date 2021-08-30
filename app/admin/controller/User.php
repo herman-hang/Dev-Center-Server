@@ -47,7 +47,7 @@ class User extends Base
     {
         if (request()->isPost()) {
             // 接收数据
-            $data = Request::except(['create_time', 'update_time', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause']);
+            $data = Request::except(['create_time', 'update_time', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause', 'login_error', 'error_time', 'ban_time', 'lastlog_ip', 'lastlog_time', 'login_sum']);
             // 验证数据
             $validate = new UserValidate();
             if (!$validate->sceneAdd()->check($data)) {
@@ -83,7 +83,7 @@ class User extends Base
     {
         if (request()->isPut()) {
             // 接收数据
-            $data = Request::except(['create_time', 'update_time', 'status', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause']);
+            $data = Request::except(['create_time', 'update_time', 'status', 'wx_openid', 'qq_openid', 'weibo_openid', 'expenditure', 'money', 'cause', 'login_error', 'error_time', 'ban_time', 'lastlog_ip', 'lastlog_time', 'login_sum']);
             // 验证数据
             $validate = new UserValidate();
             if (!$validate->sceneEdit()->check($data)) {
@@ -130,7 +130,7 @@ class User extends Base
         // 接收用户ID
         $id = Request::param('id');
         // 查询用户信息
-        $info = Db::name('user')->withoutField(['wx_openid', 'qq_openid', 'weibo_openid'])->where('id', $id)->find();
+        $info = Db::name('user')->withoutField(['wx_openid', 'qq_openid', 'weibo_openid', 'login_error', 'error_time', 'ban_time', 'lastlog_ip', 'lastlog_time', 'login_sum'])->where('id', $id)->find();
         result(200, "获取数据成功！", $info);
     }
 
