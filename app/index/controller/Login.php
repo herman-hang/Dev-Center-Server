@@ -16,7 +16,7 @@ use think\facade\Request;
 use app\index\validate\Login as LoginValidate;
 use app\index\model\User;
 
-class Login
+class Login extends Base
 {
     public function login()
     {
@@ -25,7 +25,7 @@ class Login
             $data = Request::only(['user', 'password', 'code']);
             //验证数据
             $validate = new LoginValidate();
-            if (!$validate->check($data)) {
+            if (!$validate->sceneLogin()->check($data)) {
                 result(403, $validate->getError());
             }
             // 查询当前用户
@@ -175,7 +175,156 @@ class Login
     }
 
     /**
-     * 生成验证码
+     * 快捷登录开关获取
+     */
+    public function getSwitch()
+    {
+        //查询所有开关信息
+        $info = Db::name('switch')->where('id', 1)->field('qqlogin_switch,weixinlogin_switch,sinalogin_switch,giteelogin_switch')->find();
+        // 转为布尔值
+        foreach ($info as $key => $val) {
+            $info[$key] = (bool)$val;
+        }
+        result(200, "获取开关信息成功！", $info);
+    }
+
+    /**
+     * 获取验证码接口
+     */
+    public function getCaptcha()
+    {
+        //生成验证码
+        $code = CaptchaApi::create();
+        //存入key
+        Cache::set('captcha_' . Request::ip(), $code['key'], 600);
+        //删除数组中的key和code
+        unset($code['key'], $code['code']);
+        result(200, "获取验证码成功！", $code);
+    }
+
+    /**
+     * 注册
+     */
+    public function register()
+    {
+        if (request()->isPost()) {
+            // 查询用户注册是否关闭
+            $switch = Db::name('switch')->where('id', 1)->field('register_switch')->find();
+            if ($switch['register_switch'] === 0) {
+                result(403, "注册已关闭！");
+            }
+            // 接收数据
+            $data = Request::only(['user', 'password', 'passwords', 'code']);
+            // 验证数据
+            $validate = new LoginValidate();
+            if (!$validate->sceneRegister()->check($data)) {
+                result(403, $validate->getError());
+            }
+            // 密码加密
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+            // 新增
+            $res = User::create($data);
+            if ($res) {
+                result(200, "注册成功！");
+            } else {
+                result(403, "注册失败！");
+            }
+        }
+    }
+
+    /**
+     * 修改密码发送验证码
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function sendPassEmailCode()
+    {
+        if (request()->isPost()) {
+            // 接收数据
+            $data = Request::only(['user', 'email']);
+            // 验证数据
+            $validate = new LoginValidate();
+            if (!$validate->scenePassSendCode()->check($data)) {
+                result(403, $validate->getError());
+            }
+            // 查询网站名称
+            $system = Db::name('system')->where('id', '1')->field('name')->find();
+            // 邮件标题
+            $title = "新用户注册";
+            // 当前时间
+            $time = date("Y-m-d H:i:s", time());
+            // 验证码
+            $code = codeStr();
+            // 记录验证码等提交的时候验证
+            $data['code'] = $code;
+            if (!Cache::set('send_pass_code_' . Request::ip(), $data, 300)) {
+                result(403, "验证码生成失败！");
+            }
+            // 邮件内容
+            $content = "您正在 <strong>{$system['name']}</strong> {$time}找回密码，为了证实您是邮箱本人，请您将以下验证码输入到找回密码页面的输入框中<h2 style='color: #00a2ca'>{$code}</h2>验证码<strong>5</strong>分钟有效，如非本人操作，请忽略！";
+            // 发送操作
+            $res = $this->sendEmail($data['email'], $title, $content, $data['user']);
+            if ($res) {
+                result(200, "发送成功！");
+            } else {
+                result(403, "发送失败！");
+            }
+        }
+    }
+
+    /**
+     * 修改密码下一步操作
+     */
+    public function passEditNext()
+    {
+        if (request()->isPost()) {
+            // 接收数据
+            $data = Request::only(['code']);
+            // 验证数据
+            $info = Cache::get('send_pass_code_' . Request::ip());
+            if (empty($info)) {
+                result(403, "验证码过期！");
+            }
+            if ($data['code'] !== $info['code']) {
+                result(403, "验证码不正确");
+            }
+            result(200, "验证通过！");
+        }
+    }
+
+    /**
+     * 修改密码
+     * @throws \think\db\exception\DbException
+     */
+    public function password()
+    {
+        if (request()->isPost()) {
+            // 接收数据
+            $data = Request::only(['password']);
+            // 验证数据
+            $validate = new LoginValidate();
+            if (!$validate->scenePassword()->check($data)) {
+                result(403, $validate->getError());
+            }
+            // 执行修改
+            $info = Cache::get('send_pass_code_' . Request::ip());
+            if (empty($info)) {
+                result(403, "验证码过期！");
+            }
+            // 加密密码
+            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+            $res = Db::name('user')->where('user', $info['user'])->update(['password' => $data['password']]);
+            if ($res) {
+                result(200, "修改成功！");
+            } else {
+                result(403, "修改失败！");
+            }
+        }
+    }
+
+    /**
+     * 生成验证码供调用
      * @return array
      */
     public function captcha(): array
@@ -227,33 +376,5 @@ class Login
                 return 0;
         }
         return 1;
-    }
-
-    /**
-     * 快捷登录开关获取
-     */
-    public function getSwitch()
-    {
-        //查询所有开关信息
-        $info = Db::name('switch')->where('id', 1)->field('qqlogin_switch,weixinlogin_switch,sinalogin_switch,giteelogin_switch')->find();
-        // 转为布尔值
-        foreach ($info as $key => $val) {
-            $info[$key] = (bool)$val;
-        }
-        result(200, "获取开关信息成功！", $info);
-    }
-
-    /**
-     * 获取验证码
-     */
-    public function getCaptcha()
-    {
-        //生成验证码
-        $code = CaptchaApi::create();
-        //存入key
-        Cache::set('captcha_' . Request::ip(), $code['key'], 600);
-        //删除数组中的key和code
-        unset($code['key'], $code['code']);
-        result(200, "获取验证码成功！", $code);
     }
 }

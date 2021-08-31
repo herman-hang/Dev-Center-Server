@@ -11,7 +11,7 @@
 登录中...
 <script>
     window.onload = function () {
-        window.opener.postMessage("{$token}", "{$domain}");
+        window.opener.postMessage("{$token}", "*");
         window.close();
     }
 </script>

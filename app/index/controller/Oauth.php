@@ -147,13 +147,13 @@ class Oauth
                 $token = JWTAuth::builder(['uid' => $user['id']]);
                 //登录总次数自增1
                 Db::name('user')->where('id', $user['id'])->Inc('login_sum');
-                return view('loading', ['token' => 'bearer ' . $token, 'domain' => Request::domain() . '/index/login']);
+                return view('loading', ['token' => 'bearer ' . $token]);
             } else {
                 //设置openid的缓存,方便登录成功后进行绑定
                 $oauth['type'] = $type;
                 $oauth['openid'] = $openid;
                 Cache::set('oauth_' . Request::ip(), $oauth, 600);
-                return view('loading', ['token' => '', 'domain' => Request::domain() . '/index/login']);
+                return view('loading', ['token' => '']);
             }
         } else {
             result(500, '获取第三方用户信息失败！');

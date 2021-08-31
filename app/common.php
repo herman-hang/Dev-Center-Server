@@ -126,7 +126,7 @@ function sendSms(string $user, string $pass, string $content, string $phone)
  * @param int $type 验证码类型，1为邮件验证码，2为短信验证码
  * @return false|string
  */
-function codeStr($type = 0)
+function codeStr($type = 1)
 {
     //邮件验证码
     if ($type == 1) {

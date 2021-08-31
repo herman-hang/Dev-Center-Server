@@ -162,13 +162,13 @@ class Oauth extends Base
                 Db::name('admin')->where('id', $admin['id'])->Inc('login_sum');
                 //记录日志
                 $this->log("使用{$loginType}快捷登录成功！", 1, $admin['id']);
-                return view('loading', ['token' => 'bearer ' . $token, 'domain' => Request::domain() . '/' . $system['access'] . '/login']);
+                return view('loading', ['token' => 'bearer ' . $token]);
             } else {
                 //设置openid的缓存,方便登录成功后进行绑定
                 $oauth['type'] = $type;
                 $oauth['openid'] = $openid;
                 Cache::set('oauth_' . Request::ip(), $oauth, 600);
-                return view('loading', ['token' => '', 'domain' => Request::domain() . '/' . $system['access'] . '/login']);
+                return view('loading', ['token' => '']);
             }
         } else {
             result(500, '获取第三方用户信息失败！');

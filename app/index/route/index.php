@@ -12,3 +12,11 @@ Route::rule('captcha', 'Login/getCaptcha', 'GET');
 Route::rule('getswitch', 'Login/getSwitch', 'GET');
 // 登录页
 Route::rule('login', 'Login/login', 'POST');
+// 用户注册
+Route::rule('register', 'Login/register', 'POST');
+// 找回密码验证码发送
+Route::rule('sendPassEmailCode', 'Login/sendPassEmailCode', 'POST');
+// 修改密码下一步
+Route::rule('passEditNext', 'Login/passEditNext', 'POST');
+// 执行修改密码
+Route::rule('password', 'Login/password', 'POST');

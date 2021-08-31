@@ -118,40 +118,4 @@ class Base extends BaseController
             }
         }
     }
-
-    /**
-     * 邮件发送
-     * @param string $email 接收邮箱
-     * @param string $title 邮件标题
-     * @param string $content 邮件正文
-     * @param string $user 接收邮件用户名（本站）
-     * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     */
-    public function sendEmail(string $email, string $title, string $content, string $user)
-    {
-        //查询邮件配置信息
-        $info = Db::name('email')->where('id', 1)->find();
-        //查询网站信息
-        $system = Db::name('system')->where('id', 1)->field('name,logo')->find();
-        if ($info) {
-            // 本站域名
-            $domain = request()->domain();
-            // 本站LOGO
-            $logo = $domain . $system['logo'];
-            // 构造HTML模板
-            $html = emailHtml($domain, $logo, $user, $content, $system['name']);
-            //执行邮件发送
-            $res = sendEmail($info['email'], $info['key'], $info['stmp'], $info['sll'], $system['name'], $title, $html, $email);
-            if ($res) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } else {
-            return 0;
-        }
-    }
 }
