@@ -32,7 +32,8 @@
     "thans/thinkphp-filesystem-cloud": "^1.0",
     "topthink/think-view": "^1.0",
     "ext-iconv": "*",
-    "yurunsoft/yurun-http": "^4.3"
+    "yurunsoft/yurun-http": "^4.3",
+    "yurunsoft/pay-sdk": "^3.1"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",

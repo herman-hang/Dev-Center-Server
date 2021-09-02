@@ -18,6 +18,12 @@ use app\index\model\User;
 
 class Login extends Base
 {
+    /**
+     * 登录
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function login()
     {
         if (request()->isPost()) {
@@ -308,7 +314,7 @@ class Login extends Base
                 result(403, $validate->getError());
             }
             // 执行修改
-            $info = Cache::get('send_pass_code_' . Request::ip());
+            $info = Cache::pull('send_pass_code_' . Request::ip());
             if (empty($info)) {
                 result(403, "验证码过期！");
             }

@@ -20,3 +20,5 @@ Route::rule('sendPassEmailCode', 'Login/sendPassEmailCode', 'POST');
 Route::rule('passEditNext', 'Login/passEditNext', 'POST');
 // 执行修改密码
 Route::rule('password', 'Login/password', 'POST');
+// 退出登录
+Route::rule('loginOut', 'Index/loginOut', 'POST');

@@ -307,3 +307,15 @@ function delete_dir_file($dir_name)
     }
     return $result;
 }
+
+/**
+ * 订单号生成
+ * @return string
+ */
+function trade_no()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    $usec = substr(str_replace('0.', '', $usec), 0 ,4);
+    $str  = rand(10,99);
+    return date("YmdHis").$usec.$str;
+}

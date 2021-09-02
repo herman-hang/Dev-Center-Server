@@ -136,9 +136,9 @@ class Index extends Base
                     $dayAuthorization = 0;
                 }
                 $authorizationWeekData[] = $dayAuthorization;
-                $week = $week + 1;
                 // 每日时间记录
                 $weekTime[] = date('Y-m-d', strtotime("{$week} day"));
+                $week = $week + 1;
             }
             $data['option'] = [
                 'legend' => [
