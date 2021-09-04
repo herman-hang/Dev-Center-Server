@@ -19,5 +19,8 @@ return [
         'oauth/callback',// 第三方登录授权回调地址
         'pay/epayNotify', // 易支付服务器异步通知地址
         'pay/epayReturn', // 易支付回调地址
+        'pay/epayNotify', // 易支付异步通知地址
+        'pay/alipayReturn', // 支付宝官方回调地址
+        'pay/alipayNotify', // 支付宝官方异步通知地址
     ]
 ];
