@@ -22,7 +22,8 @@ class Authorization extends Validate
         'ip' => 'require|ip',
         'domain_one' => 'require',
         'status' => 'require',
-        'user_id' => 'require'
+        'user_id' => 'require',
+        'level' => 'require'
     ];
 
     /**
@@ -38,6 +39,7 @@ class Authorization extends Validate
         'domain_one.ip' => '授权域名至少填写1个！',
         'status.require' => '请选择状态！',
         'user_id.require' => '请绑定用户！',
+        'level.require' => '请选择授权服务！'
     ];
 
     /**
@@ -46,7 +48,7 @@ class Authorization extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['name', 'ip', 'domain_one', 'status', 'user_id']);
+        return $this->only(['name', 'ip', 'domain_one', 'level']);
     }
 
     /**
@@ -55,6 +57,6 @@ class Authorization extends Validate
      */
     public function sceneEdit()
     {
-        return $this->only(['name', 'ip', 'domain_one', 'user_id']);
+        return $this->only(['name', 'ip', 'domain_one']);
     }
 }

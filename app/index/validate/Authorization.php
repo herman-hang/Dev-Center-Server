@@ -49,6 +49,15 @@ class Authorization extends Validate
      */
     public function sceneAdd()
     {
-        return $this->only(['name','ip','domain_one','domain_two','domain_tree','level']);
+        return $this->only(['name', 'ip', 'domain_one', 'domain_two', 'domain_tree', 'level']);
+    }
+
+    /**
+     * 授权站点编辑
+     * @return Authorization
+     */
+    public function sceneEdit()
+    {
+        return $this->only(['name', 'ip', 'domain_one', 'domain_two', 'domain_tree']);
     }
 }

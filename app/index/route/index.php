@@ -22,3 +22,11 @@ Route::rule('passEditNext', 'Login/passEditNext', 'POST');
 Route::rule('password', 'Login/password', 'POST');
 // 退出登录
 Route::rule('loginOut', 'Index/loginOut', 'POST');
+
+/**
+ * 授权中心路由
+ */
+Route::group('authorization', function () {
+    // 根据ID获取管理员数据
+    Route::rule('query/:id', 'authorization/query', "GET");
+});
