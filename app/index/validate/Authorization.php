@@ -60,4 +60,13 @@ class Authorization extends Validate
     {
         return $this->only(['name', 'ip', 'domain_one', 'domain_two', 'domain_tree']);
     }
+
+    /**
+     * 授权站服务升级
+     * @return Authorization
+     */
+    public function sceneUpdateService()
+    {
+        return $this->only(['upgrade_level', 'pay_type']);
+    }
 }

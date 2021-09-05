@@ -17,9 +17,7 @@ return [
         'login/oauth',// 第三方登录绑定
         'oauth/login',// 第三方登录地址
         'oauth/callback',// 第三方登录授权回调地址
-        'authorization/epayReturn', // 易支付回调地址
-        'authorization/epayNotify', // 易支付异步通知地址
-        'authorization/alipayReturn', // 支付宝官方回调地址
-        'authorization/alipayNotify', // 支付宝官方异步通知地址
+        'authorization/authPaySuccess', // 授权站点的支付异步通知地址
+        'authorization/authPaySuccessReturn', // 授权站点的支付回调地址
     ]
 ];

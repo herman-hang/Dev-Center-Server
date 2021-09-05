@@ -23,7 +23,8 @@ class Authorization extends Validate
         'domain_one' => 'require',
         'status' => 'require',
         'user_id' => 'require',
-        'level' => 'require'
+        'level' => 'require',
+        'pay_type' => 'require'
     ];
 
     /**
@@ -39,7 +40,8 @@ class Authorization extends Validate
         'domain_one.ip' => '授权域名至少填写1个！',
         'status.require' => '请选择状态！',
         'user_id.require' => '请绑定用户！',
-        'level.require' => '请选择授权服务！'
+        'upgrade_level.require' => '请选择授权服务！',
+        'pay_type.require' => '请选择支付类型！'
     ];
 
     /**
