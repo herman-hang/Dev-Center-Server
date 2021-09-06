@@ -7,6 +7,7 @@ declare (strict_types=1);
 
 namespace app\index\controller;
 
+use app\index\middleware\Auth;
 use app\index\model\Authorization as AuthorizationModel;
 use qqpay\QQPay;
 use think\facade\Cache;
@@ -16,6 +17,12 @@ use think\facade\Request;
 
 class Pay
 {
+    /**
+     * 检测登录中间件调用
+     * @var string[]
+     */
+    protected $middleware = [Auth::class];
+
     /**
      * 选择支付方式
      * @param array $data 前台发送过来的授权信息
@@ -110,7 +117,7 @@ class Pay
         //交易类型
         $requests->trade_type = "NATIVE";
         //异步通知地址
-        $requests->notify_url = $data['notify_url'];
+        $requests->notify_url = Request::domain() . '/' . $data['notify_url'];
         try {
             // 调用接口
             $result = $pay->execute($requests);
@@ -302,7 +309,7 @@ class Pay
         $tradeNo = trade_no();
         $qqArr = [
             "mch_id" => $qqpayInfo['qqpay_mchid'],//商户号
-            "notify_url" => $data['notify_url'],//异步通知回调地址
+            "notify_url" => Request::domain() . '/' . $data['notify_url'],//异步通知回调地址
             "key" => $qqpayInfo['qqpay_key'],//商户key
         ];
         $param = [
@@ -388,8 +395,8 @@ class Pay
             'pid' => $epayInfo['epay_appid'],// 商户ID
             'type' => $data['pay_type'], // 支付方式
             'out_trade_no' => $tradeNo, // 订单号
-            'notify_url' => $data['notify_url'], // 异步通知地址
-            "return_url" => $data['return_url'],//页面跳转同步通知页面路径
+            'notify_url' => Request::domain() . url($data['notify_url']), // 异步通知地址
+            "return_url" => Request::domain() . url($data['return_url']),//页面跳转同步通知页面路径
             'name' => $data['title'], // 商品名称
             'money' => $data['price'], // 商品价格
             'sign' => $epayInfo['epay_key'], // 签名字符串
@@ -494,13 +501,13 @@ class Pay
         $params = new \Yurun\PaySDK\AlipayApp\Params\PublicParams();
         $params->appID = $alipayInfo['alipay_private_id'];
         $params->appPrivateKey = $alipayInfo['alipay_private_key'];
-//        $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
+        $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
         // SDK实例化，传入公共配置
         $pay = new \Yurun\PaySDK\AlipayApp\SDK($params);
         // 支付接口
         $requests = new \Yurun\PaySDK\AlipayApp\Page\Params\Pay\Request();
-        $requests->notify_url = Request::domain() . url("authorization/alipayNotify"); // 支付后通知地址（作为支付成功回调，这个可靠）
-        $requests->return_url = Request::domain() . url("authorization/alipayReturn"); // 支付后跳转返回地址
+        $requests->notify_url = Request::domain() . url($data['notify_url']); // 支付后通知地址（作为支付成功回调，这个可靠）
+        $requests->return_url = Request::domain() . url($data['return_url']); // 支付后跳转返回地址
         $requests->businessParams->out_trade_no = $tradeNo; // 商户订单号
         $requests->businessParams->total_amount = $data['price']; // 价格
         $requests->businessParams->subject = $data['title']; // 商品标题
@@ -525,7 +532,7 @@ class Pay
     /**
      * 支付宝官方支付回调地址
      * @param array $data 第三方服务器返回的数据
-     * @return \think\response\View
+     * @return int -1为支付金额异常，0支付失败，1支付成功
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -537,7 +544,7 @@ class Pay
         $params = new \Yurun\PaySDK\AlipayApp\Params\PublicParams();
         $params->appPublicKey = $alipayInfo['alipay_public_key'];
         $params->appPrivateKey = $alipayInfo['alipay_private_key'];
-//            $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
+        $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
         // SDK实例化，传入公共配置
         $pay = new \Yurun\PaySDK\AlipayApp\SDK($params);
         try {
@@ -545,14 +552,14 @@ class Pay
                 // 获取缓存
                 $info = Cache::get('alipay_' . $data['out_trade_no']);
                 if ((float)$data['total_amount'] !== (float)$info['price']) {
-                    return view('pay', ['code' => 403, 'msg' => '支付金额异常！']);
+                    return -1;
                 }
-                return view('pay', ['code' => 201, 'msg' => '支付成功！']);
+                return 1;
             } else {
-                return view('pay', ['code' => 403, 'msg' => '支付失败！']);
+                return 0;
             }
         } catch (\Exception $e) {
-            return view('pay', ['code' => 403, 'msg' => $e->getMessage()]);
+            return 0;
         }
     }
 
@@ -571,7 +578,7 @@ class Pay
         $params = new \Yurun\PaySDK\AlipayApp\Params\PublicParams();
         $params->appPublicKey = $alipayInfo['alipay_public_key'];
         $params->appPrivateKey = $alipayInfo['alipay_private_key'];
-//            $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
+        $params->apiDomain = 'https://openapi.alipaydev.com/gateway.do'; // 设为沙箱环境，如正式环境请把这行注释
         // SDK实例化，传入公共配置
         $pay = new \Yurun\PaySDK\AlipayApp\SDK($params);
         if ($pay->verifyCallback($data)) {
