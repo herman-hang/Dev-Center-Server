@@ -61,7 +61,7 @@ class App extends Base
      */
     public function add()
     {
-        if (request()) {
+        if (request()->isPost()) {
             // 接收数据
             $data = Request::except(['download', 'cause']);
             // 验证数据

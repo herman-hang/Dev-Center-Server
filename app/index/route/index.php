@@ -30,3 +30,11 @@ Route::group('authorization', function () {
     // 根据ID获取管理员数据
     Route::rule('query/:id', 'authorization/query', "GET");
 });
+
+/**
+ * 应用发布相关路由
+ */
+Route::group('app',function (){
+    // 根据ID获取管理员数据
+    Route::rule('query/:id','app/query',"GET");
+});
