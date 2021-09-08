@@ -94,7 +94,6 @@ class Functional extends Base
             $this->log("修改了短信配置信息！");
             result(200, "修改成功！");
         } else {
-            $this->log("修改短信配置信息失败！");
             result(403, "修改失败！");
         }
     }

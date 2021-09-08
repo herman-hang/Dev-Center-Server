@@ -33,7 +33,8 @@
     "topthink/think-view": "^1.0",
     "ext-iconv": "*",
     "yurunsoft/yurun-http": "^4.3",
-    "yurunsoft/pay-sdk": "^3.0"
+    "yurunsoft/pay-sdk": "^3.0",
+    "ext-json": "*"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",

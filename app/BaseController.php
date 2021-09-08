@@ -1,8 +1,9 @@
 <?php
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace app;
 
+use think\api\Client;
 use think\App;
 use think\exception\ValidateException;
 use think\facade\Db;
@@ -40,11 +41,11 @@ abstract class BaseController
     /**
      * 构造方法
      * @access public
-     * @param  App  $app  应用对象
+     * @param App $app 应用对象
      */
     public function __construct(App $app)
     {
-        $this->app     = $app;
+        $this->app = $app;
         $this->request = $this->app->request;
 
         // 控制器初始化
@@ -53,15 +54,16 @@ abstract class BaseController
 
     // 初始化
     protected function initialize()
-    {}
+    {
+    }
 
     /**
      * 验证数据
      * @access protected
-     * @param  array        $data     数据
-     * @param  string|array $validate 验证器名或者验证规则数组
-     * @param  array        $message  提示信息
-     * @param  bool         $batch    是否批量验证
+     * @param array $data 数据
+     * @param string|array $validate 验证器名或者验证规则数组
+     * @param array $message 提示信息
+     * @param bool $batch 是否批量验证
      * @return array|string|true
      * @throws ValidateException
      */
@@ -76,7 +78,7 @@ abstract class BaseController
                 [$validate, $scene] = explode('.', $validate);
             }
             $class = false !== strpos($validate, '\\') ? $validate : $this->app->parseClass('validate', $validate);
-            $v     = new $class();
+            $v = new $class();
             if (!empty($scene)) {
                 $v->scene($scene);
             }
@@ -128,4 +130,40 @@ abstract class BaseController
         }
     }
 
+    /**
+     * @param string $content 需要发送的内容
+     * @param string $mobile 待发送的手机号码
+     * @param string $type 接口类型（1为短信宝，0为ThinkAPI）
+     * @param string $code 验证码
+     * @param int $tempId 短信模板ID，当$type=1的时候这个参数必须
+     * @return bool
+     * @throws \think\api\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function sendMobile(string $content, string $mobile, $type = '1', $code = '', $tempId = 0)
+    {
+        //查询AppCode
+        $sms = Db::name('sms')->where('id', 1)->find();
+        if ($type == '0') {
+            //实例化ThinkAPI短信接口
+            $client = new Client($sms['app_code']);
+            $res = $client->smsSend()
+                ->withSignId($sms['sign_id'])
+                ->withTemplateId($tempId)
+                ->withPhone($mobile)
+                ->withParams(json_encode(['code' => $code]))
+                ->request();
+            $res = $res['code'];
+        } else if ($type == '1') {
+            //调用发送函数
+            $res = sendSms($sms['smsbao_account'], $sms['smsbao_pass'], $content, $mobile);
+        }
+        if ($res == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

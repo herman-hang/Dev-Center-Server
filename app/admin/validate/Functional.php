@@ -20,6 +20,8 @@ class Functional extends Validate
     protected $rule = [
         'alipay_type' => 'require',
         'sms_type' => 'require',
+        'bind_mobile'=>'number',
+        'relieve_mobile'=>'number'
     ];
 
     /**
@@ -30,7 +32,9 @@ class Functional extends Validate
      */
     protected $message = [
         'alipay_type.require' => '请选择支付宝支付接口类型！',
-        'sms_type.require' => '请选择短信接口类型！'
+        'sms_type.require' => '请选择短信接口类型！',
+        'bind_mobile.number'=>'绑定手机号码模板ID必须是数字！',
+        'relieve_mobile.number'=>'解除手机号码模板ID必须是数字！'
     ];
 
     /**
@@ -48,6 +52,6 @@ class Functional extends Validate
      */
     public function sceneSmsEdit()
     {
-        return $this->only(['sms_type']);
+        return $this->only(['sms_type','bind_mobile','relieve_mobile']);
     }
 }
