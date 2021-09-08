@@ -106,6 +106,7 @@ class Base extends BaseController
         // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
         $val = preg_replace('/([\x00-\x08][\x0b-\x0c][\x0e-\x20])/', '', $val);
         if (is_array($val)) {
+            $va = [];
             foreach ($val as $k => $v) {
                 $va[$k] = addslashes($v);//防止unicode跨站脚本攻击
             }

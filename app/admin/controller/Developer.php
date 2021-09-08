@@ -117,7 +117,7 @@ class Developer extends Base
             //查询所有开发者
             $info = Db::name('user')
                 ->whereLike('nickname|user|mobile|email', "%" . $data['keywords'] . "%")
-                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid','status'])
+                ->withoutField(['wx_openid', 'qq_openid', 'weibo_openid', 'status'])
                 ->where('is_developer', 'in', '1,3')
                 ->order('create_time', 'desc')
                 ->paginate([
@@ -200,6 +200,45 @@ class Developer extends Base
             } else {
                 $this->log("已驳回用户[ID：{$data['id']}]成为开发者请求失败！");
                 result(403, "驳回失败！");
+            }
+        }
+    }
+
+    /**
+     * 获取开发者配置信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function developerConfig()
+    {
+        if (request()->isGet()) {
+            // 查询开发者配置信息
+            $info = Db::name('developer_config')->where('id', 1)->find();
+            result(200, "获取配置信息成功！", $info);
+        }
+    }
+
+    /**
+     * 编辑开发者配置信息
+     * @throws \think\db\exception\DbException
+     */
+    public function developerConfigEdit()
+    {
+        if (request()->isPut()) {
+            // 接收数据
+            $data = Request::param();
+            // 验证数据
+            $validate = new DeveloperValidate();
+            if (!$validate->sceneDeveloperConfigEdit()->check($data)) {
+                result(403, $validate->getError());
+            }
+            // 更新
+            $res = Db::name('developer_config')->where('id', 1)->update($data);
+            if ($res) {
+                result(200, "修改成功！");
+            } else {
+                result(403, "修改失败！");
             }
         }
     }

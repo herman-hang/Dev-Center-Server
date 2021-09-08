@@ -72,6 +72,8 @@ class Authorization extends Base
             if (!$validate->sceneEdit()->check($data)) {
                 result(403, $validate->getError());
             }
+            // xss过滤
+            $data = $this->removeXSS($data);
             // 执行更新
             $authorization = AuthorizationModel::find($data['id']);
             $res = $authorization->save($data);
@@ -116,6 +118,8 @@ class Authorization extends Base
             if (!$validate->sceneAdd()->check($data)) {
                 result(403, $validate->getError());
             }
+            // xss过滤
+            $data = $this->removeXSS($data);
             // 判断添加是否为铁牌数据，是则直接添加
             if ($data['level'] == 0) {// 免费
                 // 添加数据到数据库
