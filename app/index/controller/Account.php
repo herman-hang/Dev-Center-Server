@@ -298,4 +298,36 @@ class Account extends Base
             }
         }
     }
+
+    /**
+     * 获取API的配置信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function api()
+    {
+        if (request()->isGet()) {
+            $info = Db::name('user')->where('id', request()->uid)->field('api_key')->find();
+            $info['api'] = Request::domain() . '/api';
+            result(200, "获取数据成功！", $info);
+        }
+    }
+
+    /**
+     * 重置API KEY
+     * @throws \think\db\exception\DbException
+     */
+    public function resetKey()
+    {
+        if (request()->isPost()) {
+            $key = md5(trade_no());
+            $res = Db::name('user')->where('id', request()->uid)->update(['api_key' => $key]);
+            if ($res) {
+                result(200, "操作成功！");
+            } else {
+                result(403, "操作失败！");
+            }
+        }
+    }
 }
