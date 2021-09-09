@@ -1,0 +1,34 @@
+{
+  "name": "edward1108/edward-captcha",
+  "description": "ThinkPHP6验证码(图片、短信)支持api友好化",
+  "authors": [
+    {
+      "name": "edward",
+      "email": "xuyuanhua1987@163.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "topthink/framework": "^6.0.0"
+  },
+  "homepage": "https://github.com/Edward1108/edward-captcha",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "edward\\captcha\\": "src/"
+    },
+    "files": [
+      "src/helper.php"
+    ]
+  },
+  "extra": {
+    "think": {
+      "services": [
+        "edward\\captcha\\CaptchaService"
+      ],
+      "config": {
+        "captcha": "src/config.php"
+      }
+    }
+  }
+}
