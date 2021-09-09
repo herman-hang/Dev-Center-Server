@@ -22,7 +22,10 @@ class Account extends Validate
         'age' => 'number|between:0,120',
         'sex' => 'require',
         'qq' => 'length:5,11',
-        'mobile' => 'require|mobile|unique:user,mobile'
+        'mobile' => 'require|mobile|unique:user,mobile',
+        'email' => 'require|email|unique:user,email',
+        'password' => 'require|length:6,15',
+        'passwords' => 'require|confirm:password',
     ];
 
     /**
@@ -39,6 +42,13 @@ class Account extends Validate
         'mobile.require' => '手机号码不能为空！',
         'mobile.unique' => '手机号码已存在！',
         'mobile.mobile' => '手机号码格式错误！',
+        'email.require' => '邮箱不能为空！',
+        'email.email' => '邮箱格式错误！',
+        'email.unique' => '邮箱已存在！',
+        'password.require' => '密码不能为空！',
+        'password.length' => '密码只能在6到15位之间！',
+        'passwords.require' => '确认密码不能为空！',
+        'passwords.confirm' => '两次密码不一致！',
     ];
 
     /**
@@ -57,5 +67,23 @@ class Account extends Validate
     public function sceneBindMobile()
     {
         return $this->only(['mobile']);
+    }
+
+    /**
+     * 绑定/解除邮箱
+     * @return Account
+     */
+    public function sceneBindEmail()
+    {
+        return $this->only(['email']);
+    }
+
+    /**
+     * 修改密码
+     * @return Account
+     */
+    public function scenePasswordEdit()
+    {
+        return $this->only(['password', 'passwords']);
     }
 }

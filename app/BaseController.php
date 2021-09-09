@@ -115,7 +115,7 @@ abstract class BaseController
             // 本站域名
             $domain = request()->domain();
             // 本站LOGO
-            $logo = $domain . $system['logo'];
+            $logo = $system['logo'];
             // 构造HTML模板
             $html = emailHtml($domain, $logo, $user, $content, $system['name']);
             //执行邮件发送
@@ -131,6 +131,7 @@ abstract class BaseController
     }
 
     /**
+     * 手机验证码发送
      * @param string $content 需要发送的内容
      * @param string $mobile 待发送的手机号码
      * @param string $type 接口类型（1为短信宝，0为ThinkAPI）
