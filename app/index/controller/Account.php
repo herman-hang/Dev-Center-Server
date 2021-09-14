@@ -321,7 +321,7 @@ class Account extends Base
     public function resetKey()
     {
         if (request()->isPost()) {
-            $key = md5(trade_no());
+            $key = md5(trade_no() . codeStr());
             $res = Db::name('user')->where('id', request()->uid)->update(['api_key' => $key]);
             if ($res) {
                 result(200, "操作成功！");

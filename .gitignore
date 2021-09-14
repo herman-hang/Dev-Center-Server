@@ -3,3 +3,4 @@
 *.log
 /runtime
 /public/storage/
+/extend/root/

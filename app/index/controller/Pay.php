@@ -378,13 +378,20 @@ class Pay
         $epayInfo = Db::name('pay')->where('id', 1)->field('epay_api,epay_appid,epay_key')->find();
         // 订单号生成
         $tradeNo = trade_no();
+        // 判断易支付接口的协议
+        $preg = '/^http(s)?:\\/\\/.+/';
+        if (preg_match($preg, $epayInfo['epay_api'])) {
+            $httpType = 'https';
+        } else {
+            $httpType = 'http';
+        }
         //易支付的配置信息
         $epayConfig = [
             'partner' => (int)$epayInfo['epay_appid'],// 商户ID
             'key' => $epayInfo['epay_key'],// 商户KEY
             'sign_type' => strtoupper('MD5'),// 签名方式 不需修改
             'input_charset' => strtolower('utf-8'),// 字符编码格式 目前支持 gbk 或 utf-8
-            'transport' => 'http',// 访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
+            'transport' => $httpType,// 访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
             'apiurl' => $epayInfo['epay_api']// 支付API地址
         ];
         require_once(root_path() . "extend/epay/lib/epay_submit.class.php");
