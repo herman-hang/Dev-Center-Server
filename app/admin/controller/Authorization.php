@@ -184,7 +184,7 @@ class Authorization extends Base
      */
     public function authConfigEdit()
     {
-        if (request()->isPost()) {
+        if (request()->isPut()) {
             // 接收数据
             $data = Request::param();
             // 更新
