@@ -129,7 +129,7 @@ Route::group('app',function (){
 
 
 /**
- * 应用中心相关路由
+ * 授权列表相关路由
  */
 Route::group('authorization',function (){
     // 根据ID获取管理员数据

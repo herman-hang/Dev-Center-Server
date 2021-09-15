@@ -131,13 +131,12 @@ class Authorization extends Base
      */
     public function query()
     {
-        if (request()->isGet()) {
-            // 接收授权站点ID
-            $id = Request::param('id');
-            // 查询用户信息
-            $info = Db::name('authorization')->where('id', $id)->find();
-            result(200, "获取数据成功！", $info);
-        }
+        // 接收授权站点ID
+        $id = Request::param('id');
+        // 查询用户信息
+        $info = Db::name('authorization')->where('id', $id)->find();
+        result(200, "获取数据成功！", $info);
+
     }
 
     /**
