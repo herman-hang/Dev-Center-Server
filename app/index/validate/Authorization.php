@@ -22,7 +22,7 @@ class Authorization extends Validate
         'ip' => 'require|ip',
         'domain_one' => 'require|activeUrl',
         'domain_two' => 'activeUrl',
-        'domain_tree' => 'domain_tree',
+        'domain_tree' => 'activeUrl',
         'level' => 'require'
     ];
 

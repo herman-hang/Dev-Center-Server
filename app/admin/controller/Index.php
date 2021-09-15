@@ -184,13 +184,6 @@ class Index extends Base
     }
 
     /**
-     * 报表数据
-     */
-    public function echart()
-    {
-    }
-
-    /**
      * 清除缓存
      */
     public function clear()
