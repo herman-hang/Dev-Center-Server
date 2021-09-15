@@ -18,7 +18,10 @@ return [
     // 应用映射（自动多应用模式有效）
     'app_map' => [
         //后台地址修改
-        'admin' => 'admin'
+        'admin' => 'admin',
+        'index' => 'index',
+        'api' => 'api',
+        'mobile' => 'mobile'
     ],
     // 域名绑定（自动多应用模式有效）
     'domain_bind' => [],

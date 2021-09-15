@@ -6,6 +6,7 @@
 return [
     // 后台不需要验证登录（控制器/方法）
     'not_login' => [
+        'index/index',
         'login/login',// 用户登录
         'login/getswitch',// 第三方登录开关获取
         'login/getcaptcha',// 获取验证码接口

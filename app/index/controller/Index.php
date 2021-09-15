@@ -10,7 +10,7 @@ class Index extends Base
 {
     public function index()
     {
-        return '您好！这是一个[index]示例应用';
+        return redirect(Request::domain(). '/index');
     }
 
     /**
