@@ -1,56 +1,54 @@
-ThinkPHP 6.0
+开发者中心
 ===============
+## 项目介绍
+开发者中心v1.0.0是一款轻量级，开源，免费的系统，采用ThinkPHP6.0.x轻量级框架和ElementUI共同开发完成的，模式采用前后端分离开发，前后台可以独立分开部署，整套程序不超过10MB。
 
-> 运行环境要求PHP7.1+，兼容PHP8.0。
+## 主要特性
 
-[官方应用服务市场](https://market.topthink.com) | [`ThinkAPI`——官方统一API服务](https://docs.topthink.com/think-api)
+* 授权模块
+* 系统版本发布
+* 应用中心
+* 开发者管理
+* 第三方登录
+* 用户管理
+* 广告管理
+* 通知公告
+* 功能配置
+* 日志信息
+* 系统管理
+* 管理员管理
+* 每周数据报表
 
-ThinkPHPV6.0版本由[亿速云](https://www.yisu.com/)独家赞助发布。
+## 演示站
+* 后台演示站：http://demo.vividc.net/admin
+* 前台演示站：http://demo.vividc.net/index
 
-## 主要新特性
+## 环境要求
+* PHP7.1 (强类型严格模式)
+* fileinfo扩展（宝塔面板：软件商城->运行环境->安装PHP7.1后点击设置->安装扩展->安装fileinfo扩展）
+* CentOS 7.0+
+* Nginx 1.10+
+* MySQL 5.6+
+* curl扩展（一般都自带，虚拟主机除外，没有自行下载）
 
-* 采用`PHP7`强类型（严格模式）
-* 支持更多的`PSR`规范
-* 原生多应用支持
-* 更强大和易用的查询
-* 全新的事件系统
-* 模型事件和数据库事件统一纳入事件系统
-* 模板引擎分离出核心
-* 内部功能中间件化
-* SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
-* 对IDE更加友好
-* 统一和精简大量用法
+## 源码下载
+* 后端源码（服务器端）：https://github.com/xiaohang2020/Dev-Center-Server
+* 前台前端（客户端）：https://github.com/xiaohang2020/dev-center-index-client
+* 后台前端（客户端）：https://github.com/xiaohang2020/Dev-center-admin-client
 
-## 安装
+## 如何安装
+1、 将后端源码上传到服务器中，并且将站点运行目录设置为/public  
+2、 `根目录/config/database`下修改数据库信息
+3、 将后端源码包中的`install.sql`文件导入数据库中
 
-~~~
-composer create-project topthink/think tp 6.0.*
-~~~
+## 登录地址
 
-如果需要更新框架使用
-~~~
-composer update topthink/framework
-~~~
-
-## 文档
-
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
-
-## 参与开发
-
-请参阅 [ThinkPHP 核心框架包](https://github.com/top-think/framework)。
+* 后台的登录地址：http://绑定的域名/admin
+* 前台登录地址：http://绑定的域名/index
 
 ## 版权信息
+本系统未经授权禁止二开、篡改、商业用途，仅供个人运营或者学习使用，违者发现必追究！
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
-
-版权所有Copyright © 2006-2020 by ThinkPHP (http://thinkphp.cn)
-
-All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+## 个人公众号
+更多开源组件、项目请走传送门
+![微信公众号](https://www.yundaohang.net/tuoguan/wx.png "个人公众号")
