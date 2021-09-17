@@ -69,17 +69,22 @@ class Finance extends Base
             // 接收数据
             $data = Request::only(['keywords', 'per_page', 'current_page']);
             $app = Db::name('app')->where('user_id', request()->uid)->column('id');
-            $info = Db::name('user_buylog')
-                ->whereLike('indent|uid|product_id', "%" . $data['keywords'] . "%")
-                ->where('product_id', 'between', $app)
-                ->where('status', '1')
-                ->order('create_time', 'desc')
-                ->paginate([
-                    'list_rows' => $data['per_page'],
-                    'query' => request()->param(),
-                    'var_page' => 'page',
-                    'page' => $data['current_page']
-                ]);
+            if (!empty($app)){
+                $info = Db::name('user_buylog')
+                    ->whereLike('indent|uid|product_id', "%" . $data['keywords'] . "%")
+                    ->where('product_id', 'between', $app)
+                    ->where('status', '1')
+                    ->order('create_time', 'desc')
+                    ->paginate([
+                        'list_rows' => $data['per_page'],
+                        'query' => request()->param(),
+                        'var_page' => 'page',
+                        'page' => $data['current_page']
+                    ]);
+
+            }else{
+                $info = [];
+            }
             result(200, "获取数据成功！", $info);
         }
     }
