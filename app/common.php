@@ -288,14 +288,14 @@ EOT;
 function delete_dir_file($dir_name)
 {
     $result = false;
-    if(is_dir($dir_name)){
+    if (is_dir($dir_name)) {
         if ($handle = opendir($dir_name)) {
             while (false !== ($item = readdir($handle))) {
                 if ($item != '.' && $item != '..') {
-                    if (is_dir($dir_name . DIRECTORY_SEPARATOR. $item)) {
-                        delete_dir_file($dir_name . DIRECTORY_SEPARATOR. $item);
+                    if (is_dir($dir_name . DIRECTORY_SEPARATOR . $item)) {
+                        delete_dir_file($dir_name . DIRECTORY_SEPARATOR . $item);
                     } else {
-                        unlink($dir_name . DIRECTORY_SEPARATOR. $item);
+                        unlink($dir_name . DIRECTORY_SEPARATOR . $item);
                     }
                 }
             }
@@ -315,7 +315,7 @@ function delete_dir_file($dir_name)
 function trade_no()
 {
     list($usec, $sec) = explode(" ", microtime());
-    $usec = substr(str_replace('0.', '', $usec), 0 ,4);
-    $str  = rand(10,99);
-    return date("YmdHis").$usec.$str;
+    $usec = substr(str_replace('0.', '', $usec), 0, 4);
+    $str = rand(10, 99);
+    return date("YmdHis") . $usec . $str;
 }

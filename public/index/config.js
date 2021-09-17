@@ -1,6 +1,6 @@
 window.serverConfig = {
   // API接口
-  BASE_API: '../index/',
+  BASE_API: 'http://www.xh.com/index/',
   // 网站名称
   APP_NAME: '开发者中心',
   // 网站LOGO(绝对路径)

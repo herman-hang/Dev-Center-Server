@@ -55,7 +55,6 @@ class Authorization extends Base
         }
     }
 
-
     /**
      * 编辑授权站点
      * @throws \think\db\exception\DataNotFoundException
@@ -158,6 +157,8 @@ class Authorization extends Base
                 $data['notify_url'] = "authorization/authPaySuccess";
                 // 回调地址
                 $data['return_url'] = "authorization/PaySuccessReturn";
+                // 订单号
+                $data['order'] = trade_no();
                 // 设置缓存
                 Cache::set('pay_type_' . Request::ip(), $data['pay_type'], 600);
                 // 发起支付
@@ -351,6 +352,8 @@ class Authorization extends Base
             $data['notify_url'] = "authorization/upgradeAuthPaySuccess";
             // 回调地址
             $data['return_url'] = "authorization/PaySuccessReturn";
+            // 订单号
+            $data['order'] = trade_no();
             // 设置缓存
             Cache::set('pay_type_' . Request::ip(), $data['pay_type'], 600);
             // 发起支付

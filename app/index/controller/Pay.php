@@ -97,7 +97,7 @@ class Pay
     {
         $wxpayInfo = Db::name('pay')->where('id', 1)->field('wxpay_appid,wxpay_key,wxpay_mchid')->find();
         //生成订单
-        $tradeNo = trade_no();
+        $tradeNo = $data['order'];
         // 公共配置
         $params = new \Yurun\PaySDK\Weixin\Params\PublicParams();
         // 支付平台分配给开发者的应用ID
@@ -198,7 +198,7 @@ class Pay
     {
         $facepayInfo = Db::name('pay')->where('id', 1)->field('alipayf2f_private_id,alipayf2f_private_key,alipayf2f_public_key')->find();
         // 订单号生成
-        $tradeNo = trade_no();
+        $tradeNo = $data['order'];
         $params = new \Yurun\PaySDK\AlipayApp\Params\PublicParams();
         $params->appID = $facepayInfo['alipayf2f_private_id'];
         $params->appPrivateKey = $facepayInfo['alipayf2f_private_key'];
@@ -306,7 +306,7 @@ class Pay
         // 查询QQ的支付信息
         $qqpayInfo = Db::name('pay')->where('id', 1)->field('qqpay_mchid,qqpay_key')->find();
         // 订单号生成
-        $tradeNo = trade_no();
+        $tradeNo = $data['order'];
         $qqArr = [
             "mch_id" => $qqpayInfo['qqpay_mchid'],//商户号
             "notify_url" => Request::domain() . '/' . $data['notify_url'],//异步通知回调地址
@@ -377,7 +377,7 @@ class Pay
         // 查询支付配置信息
         $epayInfo = Db::name('pay')->where('id', 1)->field('epay_api,epay_appid,epay_key')->find();
         // 订单号生成
-        $tradeNo = trade_no();
+        $tradeNo = $data['order'];
         // 判断易支付接口的协议
         $preg = '/^http(s)?:\\/\\/.+/';
         if (preg_match($preg, $epayInfo['epay_api'])) {
@@ -503,7 +503,7 @@ class Pay
     {
         $alipayInfo = Db::name('pay')->where('id', 1)->field('alipay_private_id,alipay_public_key,alipay_private_key')->find();
         // 订单号生成
-        $tradeNo = trade_no();
+        $tradeNo = $data['order'];
         // 公共配置
         $params = new \Yurun\PaySDK\AlipayApp\Params\PublicParams();
         $params->appID = $alipayInfo['alipay_private_id'];

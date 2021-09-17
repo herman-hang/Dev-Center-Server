@@ -25,5 +25,7 @@ return [
         'authorization/epayNotify',// 易支付异步通知地址
         'authorization/alipayReturn',// 支付宝官方支付回调地址
         'authorization/alipayNotify',// 支付宝官方支付异步通知地址
+        'download/list',// 应用列表
+        'download/query',// 根据ID查询应用信息
     ]
 ];

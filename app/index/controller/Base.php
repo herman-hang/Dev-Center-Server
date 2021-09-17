@@ -161,5 +161,4 @@ class Base extends BaseController
         }
         return $val;
     }
-
 }
