@@ -20,8 +20,8 @@
 * 每周数据报表
 
 ## 演示站
-* 后台演示站：http://demo.vividc.net/admin
-* 前台演示站：http://demo.vividc.net/index
+* 后台演示站：http://develop.yundaohang.net/admin
+* 前台演示站：http://develop.yundaohang.net/index
 
 ## 环境要求
 * PHP7.1 (强类型严格模式)
