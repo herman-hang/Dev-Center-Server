@@ -19,10 +19,6 @@
 * 管理员管理
 * 每周数据报表
 
-## 演示站
-* 后台演示站：http://develop.yundaohang.net/admin
-* 前台演示站：http://develop.yundaohang.net/index
-
 ## 环境要求
 * PHP7.1 (强类型严格模式)
 * fileinfo扩展（宝塔面板：软件商城->运行环境->安装PHP7.1后点击设置->安装扩展->安装fileinfo扩展）
